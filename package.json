@@ -1,0 +1,21 @@
+{
+	"name": "sorse-2",
+	"version": "1.0.0",
+	"description": "The successor to Sorse. Written using Typescript + Vite for the web",
+	"main": "index.js",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"serve": "vite preview",
+		"start": "yarn build && yarn serve"
+	},
+	"keywords": [],
+	"author": "Wave-Studio",
+	"license": "GPL-3.0-or-later",
+	"dependencies": {
+		"vite": "^2.8.1"
+	},
+	"devDependencies": {
+		"typescript": "^4.5.5"
+	}
+}
