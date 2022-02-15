@@ -6,7 +6,8 @@ init({
 	version: "1.0.0",
 	scripts: [],
 	canvas: {
-		width: "screen",
-		height: "screen",
+		fullscreen: {
+			aspectRatio: '16:9',
+		}
 	}
 });

@@ -16,10 +16,12 @@ export class Sorse {
 	constructor(
 		opts: GameOptions,
 		c: HTMLCanvasElement,
-		canvas: CanvasRenderingContext2D
+		context: CanvasRenderingContext2D
 	) {
 		Sorse.canvas = c;
-		Sorse.ctx = canvas;
+		Sorse.ctx = context;
+		context.fillStyle = "black";
+		context.fillRect(0, 0, c.width, c.height);
 		const cachediv = document.createElement("div");
 		cachediv.style.display = "none";
 		cachediv.id = "sorse-cache";
@@ -72,6 +74,7 @@ export class Sorse {
 		});
 		video.addEventListener("ended", () => {
 			video.pause();
+			this.isPastSplash = true;
 			Sorse.ctx.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
 			Sorse.ctx.fillStyle = "black";
 			Sorse.ctx.fillRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);

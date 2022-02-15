@@ -11,8 +11,11 @@ export interface GameOptions {
 	version: string;
 	description?: string;
 	canvas?: {
-		width?: number | 'screen';
-		height?: number | 'screen';
+		width?: number;
+		height?: number;
+		fullscreen?: {
+			aspectRatio: string;
+		};
 	}
 	scripts: SorseScript[];
 }

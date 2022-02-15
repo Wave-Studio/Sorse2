@@ -21,29 +21,13 @@ export const init = (opts: GameOptions) => {
 					return canvas;
 			  })();
 
-	canvas.width =
-		opts.canvas?.width == "screen"
-			? window.innerWidth
-			: opts.canvas?.width ?? 1080;
-	canvas.height =
-		opts.canvas?.height == "screen"
-			? window.innerHeight
-			: opts.canvas?.height ?? 720;
-
-	if (opts.canvas?.width == "screen" || opts.canvas?.height == "screen") {
-		window.addEventListener("resize", () => {
-			if (opts.canvas?.width == "screen") {
-				canvas.width = window.innerWidth;
-			}
-			if (opts.canvas?.height == "screen") {
-				canvas.height = window.innerHeight;
-			}
-			if (clicked == false) {
-				onRender();
-			} else {
-				Sorse.reRenderScreen();
-			}
-		});
+	canvas.width = opts.canvas?.width ?? 1080;
+	canvas.height = opts.canvas?.height ?? 720;
+	
+	if (opts.canvas?.fullscreen != undefined) {
+		// Implement aspect ratio support
+		canvas.style.width = "100%";
+		canvas.style.height = "100%";
 	}
 
 	const ctx = canvas.getContext("2d");
