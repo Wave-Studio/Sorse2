@@ -4,10 +4,12 @@
  * Developed by Wave-studio
  */
 
-import { GameOptions } from "../../index";
+import { GameOptions, SorseDefaultEvents as SorseEvents } from "../../index";
 
 export class Sorse {
 	private static cache: Map<string, HTMLImageElement | HTMLVideoElement> =
+		new Map();
+	private static sorseEvents: Map<string, ((...args: unknown[]) => void)[]> =
 		new Map();
 	private static canvas: HTMLCanvasElement;
 	private static ctx: CanvasRenderingContext2D;
@@ -51,6 +53,10 @@ export class Sorse {
 	}
 
 	private static init(_opts: GameOptions) {
+		if (this.isPastSplash == true)
+			throw new Error(
+				"Unsupported API use detected, Please check for multiple instances of sorse"
+			);
 		const video = this.getCachedElement(
 			"/splash.ogv",
 			"video"
@@ -78,10 +84,28 @@ export class Sorse {
 			Sorse.ctx.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
 			Sorse.ctx.fillStyle = "black";
 			Sorse.ctx.fillRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
-		})
+		});
 	}
 
-	public static reRenderScreen() {
+	public static async emit(eventName: SorseEvents, ...args: unknown[]) {
+		if (this.isPastSplash == false) return;
+		const events = this.sorseEvents.get(eventName) ?? [];
+		for (const event of events) {
+			const result = await event(...args);
+			if (typeof result == "boolean") {
+				if (result == false) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
+	public static event(eventName: SorseEvents) {
+		return (func: (...args: unknown[]) => void) => {
+			const events = this.sorseEvents.get(eventName) ?? [];
+			events.push(func);
+			this.sorseEvents.set(eventName, events);
+		};
 	}
 }
