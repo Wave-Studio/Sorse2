@@ -4,26 +4,21 @@
  * Developed by Wave-studio
  */
 import { Sorse } from "../index";
+import { SorseClassCore, Sprite } from "../../../index";
 
-export class Scene {
-	private gameStates: Map<string, unknown> = new Map();
+export class Scene extends SorseClassCore {
+	private sceneSprites: Sprite[] = [];
 
-	protected getState<T>(key: string): T {
-		return this.gameStates.get(key) as T;
+	public get sprites(): Sprite[] {
+		return this.sceneSprites;
 	}
 
-	protected setState(key: string, value: unknown, override = true): boolean {
-		if (this.getState(key) == undefined || override == true) {
-			this.gameStates.set(key, value);
-			Sorse.emit('statechange', key, value);
-			Sorse.emit('render');
-			return true;
-		} else {
-			return false;
-		}
+	protected setSprites(sprites: Sprite[]) {
+		this.sceneSprites = sprites;
+		Sorse.emit('render');
 	}
 
-	protected removeState(key: string): boolean {
-		return this.gameStates.delete(key);
+	constructor() {
+		super();
 	}
 }

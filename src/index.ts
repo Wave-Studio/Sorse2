@@ -4,7 +4,7 @@ init({
 	name: "TestGame",
 	author: "Blocks_n_more",
 	version: "1.0.0",
-	scripts: [],
+	scenes: [],
 	canvas: {
 		fullscreen: {
 			aspectRatio: '16:9',

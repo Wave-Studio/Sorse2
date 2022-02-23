@@ -4,4 +4,4 @@
  * Developed by Wave-studio
  */
 
-export type SorseDefaultEvents = 'ready' | 'render' | 'statechange' | 'input' | string;
+export type SorseDefaultEvents = 'ready' | 'render' | 'statechange' | 'input';

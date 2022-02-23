@@ -7,4 +7,4 @@
 export * from "./core/index";
 export * from "./core/engine/typings/index";
 export * from "./core/engine/utils/index"
-export * from "./interfaces/index";
+export * from "./typings/index";

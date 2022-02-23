@@ -3,7 +3,7 @@
  * 
  * Developed by Wave-studio
  */
-import { SorseScript } from "../index";
+import { Scene } from "../index";
 
 export interface GameOptions {
 	name: string;
@@ -17,5 +17,5 @@ export interface GameOptions {
 			aspectRatio: string;
 		};
 	}
-	scripts: SorseScript[];
+	scenes: (typeof Scene)[];
 }
