@@ -4,6 +4,9 @@
  * Developed by Wave-studio
  */
 
-export const initSorse = () => {
-	
+import { InitOpts } from "./index";
+import { Sorse } from "./engine/index";
+
+export const initSorse = (opts: InitOpts) => {
+	new Sorse(opts);
 }

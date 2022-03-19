@@ -4,6 +4,8 @@
  * Developed by Wave-studio
  */
 
+import { SorseScene } from "../";
+
 export interface InitOpts {
 	/** Name of game */
 	name: string;
@@ -23,5 +25,5 @@ export interface InitOpts {
 		fullscreen?: boolean;
 	}
 	/** Scenes of game */
-	scenes: (typeof String)[];
+	scenes: (typeof SorseScene)[];
 }

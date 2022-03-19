@@ -6,4 +6,5 @@
 
 export * from "./typings/index";
 export * from "./engine/decorators/index";
+export * from "./engine/methods/index";
 export * from "./init";

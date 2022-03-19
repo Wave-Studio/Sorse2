@@ -6,3 +6,4 @@
 
 // Bri'ish people be like
 export * from "./init";
+export * from "./event";
