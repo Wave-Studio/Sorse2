@@ -1,6 +1,6 @@
 /**
  * Sorse 2
- * 
+ *
  * Developed by Wave-studio
  */
 
@@ -18,12 +18,12 @@ export interface InitOpts {
 	/** Canvas options */
 	canvas?: {
 		/** Width of canvas */
-		width?: number | 'screen';
+		width?: number | "screen";
 		/** Height of canvas */
-		height?: number | 'screen';
+		height?: number | "screen";
 		/** Fullscreenable? */
 		fullscreen?: boolean;
-	}
+	};
 	/** Scenes of game */
-	scenes: (typeof SorseScene)[];
+	scenes: typeof SorseScene[];
 }

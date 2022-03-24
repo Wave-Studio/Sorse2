@@ -46,7 +46,7 @@ export class Sorse {
 		Sorse.on("render", () => {
 			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
 			for (const scene of opts.scenes) {
-				scene.renderScene(Sorse.context);
+				scene.render(Sorse.context);
 			}
 		});
 

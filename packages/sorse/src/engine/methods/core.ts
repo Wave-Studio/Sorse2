@@ -1,8 +1,10 @@
 /**
  * Sorse 2
- * 
+ *
  * Developed by Wave-studio
  */
+
+import { Sorse } from "..";
 
 export class SorseCore {
 	private static _states: Record<string, any> = {};
@@ -12,7 +14,7 @@ export class SorseCore {
 		this._visible = value;
 	}
 
-	static get visible(): boolean {	
+	static get visible(): boolean {
 		return this._visible;
 	}
 
@@ -20,15 +22,22 @@ export class SorseCore {
 		return this._states[name];
 	}
 
-	protected static setState<T>(name: string, value: T, replace: boolean = true): boolean {
+	protected static setState<T>(
+		name: string,
+		value: T,
+		replace: boolean = true
+	): boolean {
 		if (replace || !this._states[name]) {
 			this._states[name] = value;
+			Sorse.emit("stateChange", "SET", value);
 			return true;
 		}
 		return false;
 	}
 
 	protected static removeState(name: string): boolean {
-		return delete this._states[name];
+		const res = delete this._states[name];
+		Sorse.emit("stateChange", "DELETE", res);
+		return res;
 	}
 }
