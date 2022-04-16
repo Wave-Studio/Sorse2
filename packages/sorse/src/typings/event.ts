@@ -9,4 +9,5 @@ export interface SorseEvents {
 	render: () => void;
 	stateChange: (name: string, value: any, type: "set" | "delete") => void;
 	input: (key: string) => void;
+	debug: (type: string, ...args: unknown[]) => void;
 }

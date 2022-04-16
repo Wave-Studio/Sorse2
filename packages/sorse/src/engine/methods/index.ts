@@ -7,3 +7,4 @@
 export * from "./core";
 export * from "./scene";
 export * from "./sprite";
+export * from "./plugin";

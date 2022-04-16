@@ -11,6 +11,12 @@ export class Sorse {
 	private static context: CanvasRenderingContext2D;
 	private static events: Map<string, ((...args: unknown[]) => void)[]> =
 		new Map();
+	private static pluginData: {
+		name: string;
+		author: string;
+		version: string;
+		description: string;
+	}[] = [];
 
 	constructor(opts: InitOpts) {
 		const canvas = (Sorse.canvas = document.createElement("canvas"));
@@ -38,6 +44,22 @@ export class Sorse {
 				canvas.height = opts.canvas.height;
 			}
 		}
+
+		Sorse.on("ready", () => {
+			for (const Plugin of opts.plugins ?? []) {
+				try {
+					Plugin.onInit(Sorse);
+				} catch (e) {
+					console.error(new Error(`Plugin ${Plugin.name} failed to load! Below is a stacktrace`));
+					console.error(new Error(e));
+					continue;
+				}
+				Sorse.pluginData.push({
+					...Plugin,
+				});
+			}
+			Sorse.emit("debug", "Sorse plugins loaded", Sorse.pluginData);
+		});
 
 		Sorse.on("stateChange", () => {
 			Sorse.emit("render");

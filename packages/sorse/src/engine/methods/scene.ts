@@ -38,11 +38,11 @@ export class SorseScene extends SorseCore {
 	public static render(ctx: CanvasRenderingContext2D) {
 		if (!this.visible) return;
 
-		for (const shape of this._sceneBackground.reverse()) {
+		for (const shape of [...this._sceneBackground].reverse()) {
 			shape.render(ctx);
 		}
 
-		for (const sprite of this._sprites.reverse()) {
+		for (const sprite of [...this._sprites].reverse()) {
 			sprite.render(ctx);
 		}
 	}
