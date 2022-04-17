@@ -7,22 +7,22 @@
 import { Sorse } from "..";
 
 export class SorseCore {
-	private static _states: Record<string, any> = {};
-	private static _visible: boolean = true;
+	private _states: Record<string, any> = {};
+	private _visible: boolean = true;
 
-	static set visible(value: boolean) {
+	set visible(value: boolean) {
 		this._visible = value;
 	}
 
-	static get visible(): boolean {
+	get visible(): boolean {
 		return this._visible;
 	}
 
-	protected static getState<T>(name: string): T | undefined {
+	protected getState<T>(name: string): T | undefined {
 		return this._states[name];
 	}
 
-	protected static setState<T>(
+	protected setState<T>(
 		name: string,
 		value: T,
 		replace: boolean = true
@@ -35,7 +35,7 @@ export class SorseCore {
 		return false;
 	}
 
-	protected static removeState(name: string): boolean {
+	protected removeState(name: string): boolean {
 		const res = delete this._states[name];
 		Sorse.emit("stateChange", "DELETE", res);
 		return res;

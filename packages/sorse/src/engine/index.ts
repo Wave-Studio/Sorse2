@@ -51,6 +51,7 @@ export class Sorse {
 					Plugin.onInit(Sorse);
 				} catch (e) {
 					console.error(new Error(`Plugin ${Plugin.name} failed to load! Below is a stacktrace`));
+					// @ts-ignore
 					console.error(new Error(e));
 					continue;
 				}
@@ -58,6 +59,7 @@ export class Sorse {
 					...Plugin,
 				});
 			}
+
 			Sorse.emit("debug", "Sorse plugins loaded", Sorse.pluginData);
 		});
 
@@ -68,6 +70,7 @@ export class Sorse {
 		Sorse.on("render", () => {
 			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
 			for (const scene of opts.scenes) {
+				
 				scene.render(Sorse.context);
 			}
 		});
@@ -110,7 +113,6 @@ export class Sorse {
 
 		splash.addEventListener("loadeddata", () => {
 			const state = new AudioContext().state;
-			console.log(state);
 
 			if (state === "suspended") {
 				const listener = () => {
@@ -155,9 +157,9 @@ export class Sorse {
 	): Promise<void>;
 	static async emit(event: string, ...data: unknown[]): Promise<void> {
 		if (!this.pastSplash) return;
-		for (const callback of this.events.get(event) ?? []) {
+		for (const func of this.events.get(event) ?? []) {
 			try {
-				callback(...data);
+				func(...data);
 			} catch {
 				continue;
 			}
@@ -166,7 +168,8 @@ export class Sorse {
 
 	static on<T extends keyof SorseEvents>(event: T, callback: SorseEvents[T]) {
 		const events = this.events.get(event) ?? [];
-		events.push(callback.call);
+		// @ts-ignore
+		events.push(callback);
 		this.events.set(event, events);
 	}
 }

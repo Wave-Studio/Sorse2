@@ -25,6 +25,6 @@ export interface InitOpts {
 		fullscreen?: boolean;
 	};
 	/** Scenes of game */
-	scenes: typeof SorseScene[];
+	scenes: SorseScene[];
 	plugins?: SorsePlugin[];
 }

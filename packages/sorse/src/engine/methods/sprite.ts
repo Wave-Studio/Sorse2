@@ -5,46 +5,44 @@
  */
 
 import { Sorse } from "../index";
-import { SorseCore, SorseShapeCore } from "../../index";
+import { SorseCore, SorseShapeCore, Position } from "../../index";
 
 export class SorseSprite extends SorseCore {
-	private static _x: number = 0;
-	private static _y: number = 0;
-	private static _shapes: SorseShapeCore[] = [];
+	private _position: Position = new Position(0, 0);
+	private _shapes: SorseShapeCore[] = [];
 
 	constructor(visible?: boolean) {
 		super();
 		if (visible !== undefined) {
-			SorseSprite.visible = visible;
+			this.visible = visible;
 		}
 	}
 
-	/** Sprite x position on scene */
-	public static get x() {
-		return this._x;
+	/** Sprite position on scene */
+	public get position() {
+		return this._position;
 	}
 
-	/** Sprite y position on scene */
-	public static get y() {
-		return this._y;
+	/** Sprite shapes */
+	public get shapes() {
+		return this._shapes;
 	}
 
-	/** Sprite x position on scene */
-	protected static set x(value: number) {
-		SorseSprite._x = value;
+	/** Add shape to sprite */
+	public set shapes(shapes: SorseShapeCore[]) {
+		this._shapes = shapes;
+	}
+
+	/** Sprite position on scene */
+	protected set position(value: Position) {
+		this.position = value;
 		Sorse.emit("stateChange", "SET", value);
 	}
 
-	/** Sprite y position on scene */
-	protected static set y(value: number) {
-		SorseSprite._y = value;
-		Sorse.emit("stateChange", "SET", value);
-	}
-
-	public static render(ctx: CanvasRenderingContext2D) {
+	public render(ctx: CanvasRenderingContext2D) {
 		if (!this.visible) return;
 		for (const shape of [...this._shapes].reverse()) {
-			shape.render(ctx, this._x, this._y);
+			shape.render(ctx, this._position.x, this._position.y);
 		}
 	}
 }

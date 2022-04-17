@@ -7,33 +7,33 @@ import { Sorse } from "../index";
 import { SorseCore, SorseSprite, SorseShapeCore } from "../../index";
 
 export class SorseScene extends SorseCore {
-	private static _sprites: typeof SorseSprite[] = [];
-	private static _sceneBackground: SorseShapeCore[];
-	private static _overlays: SorseShapeCore[] = [];
+	private _sprites: SorseSprite[] = [];
+	private _sceneBackground: SorseShapeCore[] = [];
+	private _overlays: SorseShapeCore[] = [];
 
-	protected static get sprites() {
+	protected get sprites() {
 		return this._sprites;
 	}
 
-	protected static get sceneBackground() {
+	protected get sceneBackground() {
 		return this._sceneBackground;
 	}
 
-	protected static get overlays() {
+	protected get overlays() {
 		return this._overlays;
 	}
 
-	protected static set sprites(value: typeof SorseSprite[]) {
+	protected set sprites(value: SorseSprite[]) {
 		this._sprites = value;
 		Sorse.emit("stateChange", "SET", value);
 	}
 
-	protected static set sceneBackground(value: SorseShapeCore[]) {
+	protected set sceneBackground(value: SorseShapeCore[]) {
 		this._sceneBackground = value;
 		Sorse.emit("stateChange", "SET", value);
 	}
 
-	protected static set overlays(value: SorseShapeCore[]) {
+	protected set overlays(value: SorseShapeCore[]) {
 		this._overlays = value;
 		Sorse.emit("stateChange", "SET", value);
 	}
@@ -41,22 +41,23 @@ export class SorseScene extends SorseCore {
 	constructor(visible?: boolean) {
 		super();
 		if (visible !== undefined) {
-			SorseScene.visible = visible;
+			this.visible = visible;
 		}
 	}
 
-	public static render(ctx: CanvasRenderingContext2D) {
+	public render(ctx: CanvasRenderingContext2D) {
 		if (!this.visible) return;
 
-		for (const shape of [...this._sceneBackground].reverse()) {
+		for (const shape of [...this._sceneBackground ?? []].reverse()) {
 			shape.render(ctx, 0, 0);
 		}
 
-		for (const sprite of [...this._sprites].reverse()) {
+		for (const sprite of [...this._sprites ?? []].reverse()) {
+			console.log("a")
 			sprite.render(ctx);
 		}
 
-		for (const shape of [...this._overlays].reverse()) {
+		for (const shape of [...this._overlays ?? []].reverse()) {
 			shape.render(ctx, 0, 0);
 		}
 	}
