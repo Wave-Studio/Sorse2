@@ -8,10 +8,19 @@ import { SorseCore, SorseSprite, SorseShapeCore } from "../../index";
 
 export class SorseScene extends SorseCore {
 	private static _sprites: typeof SorseSprite[] = [];
-	private static _sceneBackground: typeof SorseShapeCore[];
+	private static _sceneBackground: SorseShapeCore[];
+	private static _overlays: SorseShapeCore[] = [];
 
 	protected static get sprites() {
 		return this._sprites;
+	}
+
+	protected static get sceneBackground() {
+		return this._sceneBackground;
+	}
+
+	protected static get overlays() {
+		return this._overlays;
 	}
 
 	protected static set sprites(value: typeof SorseSprite[]) {
@@ -19,13 +28,14 @@ export class SorseScene extends SorseCore {
 		Sorse.emit("stateChange", "SET", value);
 	}
 
-	protected static set sceneBackground(value: typeof SorseShapeCore[]) {
+	protected static set sceneBackground(value: SorseShapeCore[]) {
 		this._sceneBackground = value;
 		Sorse.emit("stateChange", "SET", value);
 	}
 
-	protected static get sceneBackground() {
-		return this._sceneBackground;
+	protected static set overlays(value: SorseShapeCore[]) {
+		this._overlays = value;
+		Sorse.emit("stateChange", "SET", value);
 	}
 
 	constructor(visible?: boolean) {
@@ -39,11 +49,15 @@ export class SorseScene extends SorseCore {
 		if (!this.visible) return;
 
 		for (const shape of [...this._sceneBackground].reverse()) {
-			shape.render(ctx);
+			shape.render(ctx, 0, 0);
 		}
 
 		for (const sprite of [...this._sprites].reverse()) {
 			sprite.render(ctx);
+		}
+
+		for (const shape of [...this._overlays].reverse()) {
+			shape.render(ctx, 0, 0);
 		}
 	}
 }
