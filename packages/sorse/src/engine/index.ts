@@ -3,7 +3,7 @@
  *
  * Developed by Wave-studio
  */
-import { InitOpts, SorseEvents } from "../index";
+import { InitOpts, SorseEvents, SorseSprite } from "../index";
 
 export class Sorse {
 	private static pastSplash = false;
@@ -45,22 +45,31 @@ export class Sorse {
 			}
 		}
 
-		Sorse.on("ready", () => {
+		Sorse.on("ready", async () => {
 			for (const Plugin of opts.plugins ?? []) {
-				try {
-					Plugin.onInit(Sorse);
-				} catch (e) {
-					console.error(new Error(`Plugin ${Plugin.name} failed to load! Below is a stacktrace`));
-					// @ts-ignore
-					console.error(new Error(e));
-					continue;
-				}
+				await Plugin.onInit(Sorse);
 				Sorse.pluginData.push({
 					...Plugin,
 				});
 			}
 
 			Sorse.emit("debug", "Sorse plugins loaded", Sorse.pluginData);
+
+			for (const Scene of opts.scenes ?? []) {
+				await Scene.onInit(Sorse);
+				const initSprites = async (sprites: SorseSprite[]) => {
+					for (const sprite of sprites) {
+						await sprite.onInit(Sorse);
+						for (const shape of sprite.shapes) {
+							if (shape instanceof SorseSprite) {
+								initSprites([shape]);
+							}
+						}
+					}
+				}
+
+				initSprites(Scene.sprites);
+			}
 		});
 
 		Sorse.on("stateChange", () => {
@@ -70,7 +79,6 @@ export class Sorse {
 		Sorse.on("render", () => {
 			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
 			for (const scene of opts.scenes) {
-				
 				scene.render(Sorse.context);
 			}
 		});

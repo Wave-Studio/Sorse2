@@ -8,10 +8,9 @@ import {
 } from "sorse";
 import "./styles.css";
 
-// FIXME: Breaks everything
 class MySprite extends SorseSprite {
-	constructor() {
-		super();
+	onInit() {
+		console.log("beans")
 		this.position = new Position(100, 100);
 		this.shapes = [
 			new Rect({
@@ -30,8 +29,7 @@ class MySprite extends SorseSprite {
 }
 
 class MyScene extends SorseScene {
-	constructor() {
-		super();
+	public onInit(): void {
 		this.sprites = [new MySprite()];
 	}
 }

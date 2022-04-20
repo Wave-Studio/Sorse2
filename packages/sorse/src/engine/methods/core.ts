@@ -4,11 +4,12 @@
  * Developed by Wave-studio
  */
 
-import { Sorse } from "..";
+import { Sorse } from "../index";
 
 export class SorseCore {
 	private _states: Record<string, any> = {};
 	private _visible: boolean = true;
+	public name = "";
 
 	set visible(value: boolean) {
 		this._visible = value;
@@ -40,4 +41,7 @@ export class SorseCore {
 		Sorse.emit("stateChange", "DELETE", res);
 		return res;
 	}
+
+	// To be overridden by extending classes
+	public onInit(_sorse: Sorse) {}
 }

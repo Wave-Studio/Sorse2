@@ -14,5 +14,5 @@ export class SorsePlugin {
 
 	constructor(){}
 
-	onInit(sorseInstance: Sorse) {}
+	onInit(_sorseInstance: Sorse) {}
 }

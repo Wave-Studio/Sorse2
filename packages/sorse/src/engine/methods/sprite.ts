@@ -9,7 +9,7 @@ import { SorseCore, SorseShapeCore, Position } from "../../index";
 
 export class SorseSprite extends SorseCore {
 	private _position: Position = new Position(0, 0);
-	private _shapes: SorseShapeCore[] = [];
+	private _shapes: (SorseShapeCore | SorseSprite)[] = [];
 
 	constructor(visible?: boolean) {
 		super();
@@ -29,13 +29,13 @@ export class SorseSprite extends SorseCore {
 	}
 
 	/** Add shape to sprite */
-	public set shapes(shapes: SorseShapeCore[]) {
+	public set shapes(shapes: (SorseShapeCore | SorseSprite)[]) {
 		this._shapes = shapes;
 	}
 
 	/** Sprite position on scene */
 	protected set position(value: Position) {
-		this.position = value;
+		this._position = value;
 		Sorse.emit("stateChange", "SET", value);
 	}
 

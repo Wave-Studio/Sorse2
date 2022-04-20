@@ -11,7 +11,7 @@ export class SorseScene extends SorseCore {
 	private _sceneBackground: SorseShapeCore[] = [];
 	private _overlays: SorseShapeCore[] = [];
 
-	protected get sprites() {
+	public get sprites() {
 		return this._sprites;
 	}
 
@@ -53,7 +53,6 @@ export class SorseScene extends SorseCore {
 		}
 
 		for (const sprite of [...this._sprites ?? []].reverse()) {
-			console.log("a")
 			sprite.render(ctx);
 		}
 
