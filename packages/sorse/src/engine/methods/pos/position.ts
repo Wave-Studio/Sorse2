@@ -4,8 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { Sorse } from "../index";
-
+import { Sorse } from "../../index";
 
 export class Position {
 	constructor(private _x: number, private _y: number) {}

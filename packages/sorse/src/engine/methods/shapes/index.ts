@@ -5,8 +5,14 @@
  */
 
 export * from "./core";
-export * from "./square";
+
 export * from "./rect";
+export * from "./square";
+export * from "./roundrect";
+
 export * from "./circle";
-export * from "./polygon";
+
 export * from "./line";
+export * from "./polygon";
+
+export * from "./image";

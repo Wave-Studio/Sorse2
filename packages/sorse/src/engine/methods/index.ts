@@ -5,7 +5,10 @@
  */
 
 export * from "./core";
-export * from "./scene";
-export * from "./sprite";
+export * from "./render/scene";
+export * from "./render/sprite";
 export * from "./plugin";
-export * from "./position";
+export * from "./pos/position";
+export * from "./audio";
+export * from "./pos/collision";
+export * from "./pos/box";

@@ -1,18 +1,26 @@
 import {
-	initSorse,
+	Circle,
+	Position,
+	Rect,
 	SorseScene,
 	SorseSprite,
-	Rect,
-	Position,
-	Circle,
+	initSorse,
+	event,
+	RoundedRect,
 } from "sorse";
 import "./styles.css";
 
 class MySprite extends SorseSprite {
 	onInit() {
-		console.log("beans")
 		this.position = new Position(100, 100);
 		this.shapes = [
+			new RoundedRect({
+				color: "purple",
+				position: new Position(100, 100),
+				height: 100,
+				width: 100,
+				radius: 10,
+			}),
 			new Rect({
 				position: new Position(0, 0),
 				height: 150,
@@ -31,6 +39,11 @@ class MySprite extends SorseSprite {
 class MyScene extends SorseScene {
 	public onInit(): void {
 		this.sprites = [new MySprite()];
+	}
+
+	@event("stateChange")
+	onDebug(...args: string[]) {
+		console.log("debug", args);
 	}
 }
 

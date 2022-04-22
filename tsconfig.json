@@ -1,6 +1,4 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
-	"display": "Default",
 	"compilerOptions": {
 		"composite": false,
 		"declaration": true,
@@ -14,7 +12,9 @@
 		"noUnusedParameters": false,
 		"preserveWatchOutput": true,
 		"skipLibCheck": true,
-		"strict": true
+		"strict": true,
+		"experimentalDecorators": true,
+		"target": "ES5"
 	},
 	"exclude": ["node_modules"]
 }

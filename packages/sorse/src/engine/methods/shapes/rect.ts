@@ -4,8 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { SorseShapeCore } from "./index";
-import { SorseRectOpts } from "../../index";
+import { SorseRectOpts, SorseShapeCore } from "../../../index";
 
 export class Rect extends SorseShapeCore {
 	private _width: number;
@@ -22,6 +21,15 @@ export class Rect extends SorseShapeCore {
 	public render(ctx: CanvasRenderingContext2D, x: number, y: number) {
 		ctx.fillStyle = this._color;
 		ctx.strokeStyle = this._color;
-		ctx.fillRect(x + this._position.x, y + this._position.y, this._width, this._height);
+		ctx.beginPath();
+		ctx.rect(
+			x + this._position.x,
+			y + this._position.y,
+			this._width,
+			this._height
+		);
+		ctx.fill();
+		ctx.stroke();
+		ctx.closePath();
 	}
 }

@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { Position } from "../../index";
+import { Position } from "../../../index";
 
 export class SorseShapeCore {
 	protected _position: Position;

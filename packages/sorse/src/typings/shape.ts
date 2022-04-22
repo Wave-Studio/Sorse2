@@ -6,29 +6,47 @@
 
 import { Position } from "../index";
 
-export interface SorseShapeOptsBase {
+export interface SorseShapeOpts {
 	position: Position;
+}
+
+export interface SorseColoredShapeOpts extends SorseShapeOpts {
 	color: string | CanvasGradient | CanvasPattern;
 }
 
-export interface SorseSquareOpts extends SorseShapeOptsBase {
+export interface SorseSquareOpts extends SorseColoredShapeOpts {
 	sideLength: number;
 }
 
-export interface SorseRectOpts extends SorseShapeOptsBase {
+export interface SorseRectOpts extends SorseColoredShapeOpts {
 	width: number;
 	height: number;
 }
 
-export interface SorseCircleOpts extends SorseShapeOptsBase {
+export interface SorseRoundRectOpts extends SorseRectOpts {
+	radius: number | { tl: number; tr: number; br: number; bl: number };
+}
+
+export interface SorseCircleOpts extends SorseColoredShapeOpts {
 	radius: number;
 }
 
-export interface SorsePolygonOpts extends SorseShapeOptsBase {
+export interface SorsePolygonOpts extends SorseColoredShapeOpts {
 	points: Position[];
 }
 
-export interface SorseLineOpts extends SorseShapeOptsBase {
+export interface SorseLineOpts extends SorseColoredShapeOpts {
 	from: Position;
 	to: Position;
+}
+
+export interface SorseImageOpts extends SorseShapeOpts {
+	src:
+		| string
+		| HTMLImageElement
+		| HTMLCanvasElement
+		| SVGImageElement
+		| ImageBitmap;
+	width?: number;
+	height?: number;
 }

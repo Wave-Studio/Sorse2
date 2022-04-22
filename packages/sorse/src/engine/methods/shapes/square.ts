@@ -4,8 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { SorseShapeCore } from "./index";
-import { SorseSquareOpts } from "../../index";
+import { SorseSquareOpts, Rect, SorseShapeCore } from "../../../index";
 
 export class Square extends SorseShapeCore {
 	private _sideLength: number;
@@ -18,8 +17,11 @@ export class Square extends SorseShapeCore {
 	}
 
 	public render(ctx: CanvasRenderingContext2D, x: number, y: number) {
-		ctx.fillStyle = this._color;
-		ctx.strokeStyle = this._color;
-		ctx.fillRect(x + this._position.x, y + this._position.y, this._sideLength, this._sideLength);
+		new Rect({
+			color: this._color,
+			height: this._sideLength,
+			width: this._sideLength,
+			position: this._position,
+		}).render(ctx, x, y);
 	}
 }

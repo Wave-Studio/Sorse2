@@ -3,8 +3,8 @@
  *
  * Developed by Wave-studio
  */
-import { Sorse } from "../index";
-import { SorseCore, SorseSprite, SorseShapeCore } from "../../index";
+import { Sorse } from "../../index";
+import { SorseCore, SorseSprite, SorseShapeCore } from "../../../index";
 
 export class SorseScene extends SorseCore {
 	private _sprites: SorseSprite[] = [];
@@ -48,15 +48,15 @@ export class SorseScene extends SorseCore {
 	public render(ctx: CanvasRenderingContext2D) {
 		if (!this.visible) return;
 
-		for (const shape of [...this._sceneBackground ?? []].reverse()) {
+		for (const shape of [...(this._sceneBackground ?? [])].reverse()) {
 			shape.render(ctx, 0, 0);
 		}
 
-		for (const sprite of [...this._sprites ?? []].reverse()) {
+		for (const sprite of [...(this._sprites ?? [])].reverse()) {
 			sprite.render(ctx);
 		}
 
-		for (const shape of [...this._overlays ?? []].reverse()) {
+		for (const shape of [...(this._overlays ?? [])].reverse()) {
 			shape.render(ctx, 0, 0);
 		}
 	}

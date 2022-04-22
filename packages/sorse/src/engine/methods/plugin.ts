@@ -12,7 +12,7 @@ export class SorsePlugin {
 	version = "";
 	description = "";
 
-	constructor(){}
+	constructor() {}
 
 	onInit(_sorseInstance: Sorse) {}
 }
