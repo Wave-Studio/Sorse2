@@ -25,17 +25,17 @@ export class SorseScene extends SorseCore {
 
 	protected set sprites(value: SorseSprite[]) {
 		this._sprites = value;
-		Sorse.emit("stateChange", "SET", value);
+		Sorse.emit("stateChange", "SET", this.id, "sprites", value);
 	}
 
 	protected set sceneBackground(value: SorseShapeCore[]) {
 		this._sceneBackground = value;
-		Sorse.emit("stateChange", "SET", value);
+		Sorse.emit("stateChange", "SET", this.id, "sceneBackground", value);
 	}
 
 	protected set overlays(value: SorseShapeCore[]) {
 		this._overlays = value;
-		Sorse.emit("stateChange", "SET", value);
+		Sorse.emit("stateChange", "SET", this.id, "overlays", value);
 	}
 
 	constructor(visible?: boolean) {

@@ -8,6 +8,17 @@ import { Box, Position } from "../../../index";
 import { Sorse } from "../../index";
 
 export class Collision {
+	private _id: string = Sorse.id;
+
+	set id(id: string) {
+		this._id = id;
+		Sorse.emit("stateChange", "SET", "id", id);
+	}
+
+	get id(): string {
+		return this._id;
+	}
+
 	constructor(private _collisionBox: Box[]) {}
 
 	public get collisionBox() {
@@ -16,7 +27,7 @@ export class Collision {
 
 	public set collisionBox(value: Box[]) {
 		this._collisionBox = value;
-		Sorse.emit("stateChange", "SET", value);
+		Sorse.emit("stateChange", "SET", this.id, "collisionBox", value);
 	}
 
 	public inCollision(position: Position): boolean {

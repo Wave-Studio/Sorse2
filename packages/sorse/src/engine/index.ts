@@ -17,6 +17,28 @@ export class Sorse {
 		version: string;
 		description: string;
 	}[] = [];
+	private static objectIds: string[] = [];
+	private static idChars = "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ-01234567890".split("");
+
+	static get id() {
+		const generateId = (): string => {
+			let str = "";
+
+			for (const _ of new Array(10)) {
+				str += `${this.idChars[Math.floor(Math.random() * this.idChars.length)]}`;
+			}
+
+			return this.objectIds.includes(str) ? generateId() : str;
+		};
+
+		const id = generateId();
+		this.objectIds.push(id);
+		return id;
+	}
+
+	static removeID(id: string) {
+		this.objectIds.splice(this.objectIds.indexOf(id), 1);
+	}
 
 	constructor(opts: InitOpts) {
 		const canvas = (Sorse.canvas = document.createElement("canvas"));

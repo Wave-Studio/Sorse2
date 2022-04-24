@@ -37,19 +37,19 @@ export class SorseSprite extends SorseCore {
 	/** Add shape to sprite */
 	public set shapes(shapes: (SorseShapeCore | SorseSprite)[]) {
 		this._shapes = shapes;
-		Sorse.emit("stateChange", "SET", shapes);
+		Sorse.emit("stateChange", "SET", this.id, "shapes", shapes);
 	}
 
 	/** Sprite position on scene */
 	protected set position(value: Position) {
 		this._position = value;
-		Sorse.emit("stateChange", "SET", value);
+		Sorse.emit("stateChange", "SET", this.id, "position", value);
 	}
 
 	/** Sprite collision */
 	protected set collision(value: Collision) {
 		this._collision = value;
-		Sorse.emit("stateChange", "SET", value);
+		Sorse.emit("stateChange", "SET", this.id, "collision", value);
 	}
 
 	public render(ctx: CanvasRenderingContext2D) {
