@@ -11,18 +11,14 @@ for (const file of readdirSync("./docs/")) {
 			const sections = path.split("/").slice(1);
 			let data = verData;
 			for (const section of sections) {
-				// @ts-expect-error
 				if (!data[section]) {
-					// @ts-expect-error
 					data[section] = {};
 				}
-				// @ts-expect-error
 				data = data[section];
 			}
 
 			for (const file of readdirSync(`./docs/${path}`)) {
 				if (file.endsWith(".md")) {
-					// @ts-expect-error
 					data[file] = readFileSync(`./docs/${path}/${file}`, "utf8");
 				} else {
 					crawlDir(`${path}/${file}`);
@@ -31,7 +27,6 @@ for (const file of readdirSync("./docs/")) {
 		}
 
 		if (page.endsWith(".md")) {
-			// @ts-expect-error
 			verData[page] = readFileSync(`./docs/${file}/${page}`, "utf8");
 		} else {
 			crawlDir(`${file}/${page}`);
