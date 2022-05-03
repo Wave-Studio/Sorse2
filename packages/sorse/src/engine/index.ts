@@ -18,14 +18,19 @@ export class Sorse {
 		description: string;
 	}[] = [];
 	private static objectIds: string[] = [];
-	private static idChars = "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ-01234567890".split("");
+	private static idChars =
+		"abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ-01234567890".split(
+			""
+		);
 
 	static get id() {
 		const generateId = (): string => {
 			let str = "";
 
 			for (const _ of new Array(20)) {
-				str += `${this.idChars[Math.floor(Math.random() * this.idChars.length)]}`;
+				str += `${
+					this.idChars[Math.floor(Math.random() * this.idChars.length)]
+				}`;
 			}
 
 			return this.objectIds.includes(str) ? generateId() : str;
@@ -46,10 +51,51 @@ export class Sorse {
 		canvas.width = 1080;
 		canvas.height = 720;
 		Sorse.context = canvas.getContext("2d")!;
+		let continueRender = true;
+
+		window.onerror = (e, src, lineno, _colno, err) => {
+			continueRender = false;
+			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
+			Sorse.context.fillStyle = "red";
+			Sorse.context.fillRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
+			Sorse.context.fillStyle = "white";
+			Sorse.context.font = "Bold 30px Arial";
+			Sorse.context.fillText("[Sorse] An error occured!", 10, 30);
+			Sorse.context.fillText(
+				"[Sorse] Please alert the game's developer",
+				10,
+				70
+			);
+
+			const errorData = {
+				line: "?",
+				file: "?",
+				message: "?",
+			};
+
+			if (err != undefined) {
+				errorData.message = err.message;
+				errorData.line = lineno!.toString();
+				errorData.file = src!;
+			} else {
+				errorData.message = e.toString() ?? "Unknown error - check console";
+			}
+
+			Sorse.context.fillText(
+				"[Sorse] Error: " + `${errorData.file}:${errorData.line} - ${errorData.message}`,
+				10,
+				110,
+				Sorse.canvas.width - 20
+			);
+			console.error(
+				"[Sorse] An error occured and Sorse has been disabled to prevent further errors."
+			);
+			console.error(err ?? e);
+		};
 
 		window.oncontextmenu = () => {
 			return false;
-		}
+		};
 
 		canvas.onclick = (e) => {
 			const key = e.button ?? e.which;
@@ -70,17 +116,17 @@ export class Sorse {
 					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Unknown);
 					break;
 			}
-		}
+		};
 
 		window.onkeydown = (e) => {
 			const key = e.key.toUpperCase();
 			Sorse.emit("keyDown", key);
-		}
+		};
 
 		window.onkeyup = (e) => {
 			const key = e.key.toUpperCase();
 			Sorse.emit("keyUp", key);
-		}
+		};
 
 		if (Sorse.context == null) {
 			throw new Error("Canvas not supported");
@@ -113,10 +159,20 @@ export class Sorse {
 			Sorse.emit("debug", "Sorse plugins loaded", Sorse.pluginData);
 
 			for (const Scene of opts.scenes ?? []) {
-				await Scene.onInit(Sorse);
+				try {
+					await Scene.onInit(Sorse);
+				} catch (e) {
+					// @ts-expect-error it works
+					window.onerror!(null, "Unknown", 0, 0, e);
+				}
 				const initSprites = async (sprites: SorseSprite[]) => {
 					for (const sprite of sprites) {
-						await sprite.onInit(Sorse);
+						try {
+							await sprite.onInit(Sorse);
+						} catch (e) {
+							// @ts-expect-error it works
+							window.onerror!(null, "Unknown", 0, 0, e);
+						}
 						for (const shape of sprite.shapes) {
 							if (shape instanceof SorseSprite) {
 								initSprites([shape]);
@@ -130,10 +186,12 @@ export class Sorse {
 		});
 
 		Sorse.on("stateChange", () => {
+			if (!continueRender) return;
 			Sorse.emit("render");
 		});
 
 		Sorse.on("render", () => {
+			if (!continueRender) return;
 			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
 			for (const scene of opts.scenes) {
 				scene.render(Sorse.context);
@@ -223,11 +281,7 @@ export class Sorse {
 	static async emit(event: string, ...data: unknown[]): Promise<void> {
 		if (!this.pastSplash) return;
 		for (const func of this.events.get(event) ?? []) {
-			try {
-				func(...data);
-			} catch {
-				continue;
-			}
+			func(...data);
 		}
 	}
 

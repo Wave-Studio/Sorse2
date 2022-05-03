@@ -77,14 +77,14 @@ export class SorseSprite extends SorseCore {
 	}
 
 	/** When sprite is clicked on */
-	private onClick(pos: Position, type: SorseClickType) {
+	protected onClick(pos: Position, type: SorseClickType) {
 	}
 
 	/** When a key is pressed, use onKeyUp for when it's released */
-	private onKeyDown(key: string) {
+	protected onKeyDown(key: string) {
 	}
 
 	/** When a key is no longer held */
-	private onKeyUp(key: string) {
+	protected onKeyUp(key: string) {
 	}
 }
