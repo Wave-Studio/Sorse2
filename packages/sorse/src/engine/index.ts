@@ -3,7 +3,7 @@
  *
  * Developed by Wave-studio
  */
-import { InitOpts, SorseEvents, SorseSprite } from "../index";
+import { InitOpts, SorseEvents, SorseSprite, SorseClickType } from "../index";
 
 export class Sorse {
 	private static pastSplash = false;
@@ -24,7 +24,7 @@ export class Sorse {
 		const generateId = (): string => {
 			let str = "";
 
-			for (const _ of new Array(10)) {
+			for (const _ of new Array(20)) {
 				str += `${this.idChars[Math.floor(Math.random() * this.idChars.length)]}`;
 			}
 
@@ -46,6 +46,41 @@ export class Sorse {
 		canvas.width = 1080;
 		canvas.height = 720;
 		Sorse.context = canvas.getContext("2d")!;
+
+		window.oncontextmenu = () => {
+			return false;
+		}
+
+		canvas.onclick = (e) => {
+			const key = e.button ?? e.which;
+			switch (key) {
+				case 1:
+					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Left);
+					break;
+
+				case 2:
+					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Middle);
+					break;
+
+				case 3:
+					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Right);
+					break;
+
+				default:
+					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Unknown);
+					break;
+			}
+		}
+
+		window.onkeydown = (e) => {
+			const key = e.key.toUpperCase();
+			Sorse.emit("keyDown", key);
+		}
+
+		window.onkeyup = (e) => {
+			const key = e.key.toUpperCase();
+			Sorse.emit("keyUp", key);
+		}
 
 		if (Sorse.context == null) {
 			throw new Error("Canvas not supported");

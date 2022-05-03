@@ -30,13 +30,13 @@ export class Collision {
 		Sorse.emit("stateChange", "SET", this.id, "collisionBox", value);
 	}
 
-	public inCollision(position: Position): boolean {
+	public inCollision(offset: Position, position: Position): boolean {
 		for (const box of this._collisionBox) {
 			if (
-				position.x >= box.pos1.x &&
-				position.x <= box.pos2.x &&
-				position.y >= box.pos1.y &&
-				position.y <= box.pos2.y
+				position.x >= offset.x + box.pos1.x &&
+				position.x <= offset.x + box.pos2.x &&
+				position.y >= offset.y + box.pos1.y &&
+				position.y <= offset.y + box.pos2.y
 			) {
 				return true;
 			}

@@ -5,7 +5,7 @@
  */
 
 import { Sorse } from "../../index";
-import { SorseCore, SorseShapeCore, Position, Collision } from "../../../index";
+import { SorseCore, SorseShapeCore, Position, Collision, SorseClickType } from "../../../index";
 
 export class SorseSprite extends SorseCore {
 	private _position: Position = new Position(0, 0);
@@ -17,6 +17,23 @@ export class SorseSprite extends SorseCore {
 		if (visible !== undefined) {
 			this.visible = visible;
 		}
+
+		Sorse.on("rawMouseClick", (x, y, type) => {
+			if (!this.visible) return;
+			if (this.collision.inCollision(this._position, new Position(x, y))) {
+				this.onClick(new Position(x, y), type);
+			}
+		});
+
+		Sorse.on("keyDown", (key) => {
+			if (!this.visible) return;
+			this.onKeyDown(key);
+		})
+
+		Sorse.on("keyUp", (key) => {
+			if (!this.visible) return;
+			this.onKeyUp(key);
+		});
 	}
 
 	/** Sprite position on scene */
@@ -57,5 +74,17 @@ export class SorseSprite extends SorseCore {
 		for (const shape of [...this._shapes].reverse()) {
 			shape.render(ctx, this._position.x, this._position.y);
 		}
+	}
+
+	/** When sprite is clicked on */
+	private onClick(pos: Position, type: SorseClickType) {
+	}
+
+	/** When a key is pressed, use onKeyUp for when it's released */
+	private onKeyDown(key: string) {
+	}
+
+	/** When a key is no longer held */
+	private onKeyUp(key: string) {
 	}
 }
