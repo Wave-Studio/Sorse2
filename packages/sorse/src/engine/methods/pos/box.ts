@@ -8,8 +8,6 @@ import { Position } from "../../../index";
 import { Sorse } from "../../index";
 
 export class Box {
-	private _pos1: Position;
-	private _pos2: Position;
 	private _id: string = Sorse.id;
 
 	set id(id: string) {
@@ -21,10 +19,7 @@ export class Box {
 		return this._id;
 	}
 
-	constructor({ pos1, pos2 }: { pos1: Position; pos2: Position }) {
-		this._pos1 = pos1;
-		this._pos2 = pos2;
-	}
+	constructor(private _pos1: Position, private _pos2: Position) {}
 
 	public get pos1() {
 		return this._pos1;

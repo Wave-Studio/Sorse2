@@ -14,6 +14,8 @@ export class Line extends SorseShapeCore {
 		super();
 		this._position = position;
 		this._color = color;
+		this.pos1 = from;
+		this.pos2 = to;
 	}
 
 	public render(ctx: CanvasRenderingContext2D, x: number, y: number) {

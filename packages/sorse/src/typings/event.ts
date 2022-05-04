@@ -15,8 +15,8 @@ export interface SorseEvents {
 }
 
 export enum SorseClickType {
+	Unknown,
 	Left,
-	Right,
 	Middle,
-	Unknown
+	Right,
 }

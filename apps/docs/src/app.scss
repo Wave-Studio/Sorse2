@@ -1,6 +1,8 @@
 @use "src/theme";
 
-body, html, #app {
+body,
+html,
+#app {
 	margin: 0;
 	padding: 0;
 	background-color: theme.$coolGray-700;

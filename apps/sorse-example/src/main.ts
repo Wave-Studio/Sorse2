@@ -7,12 +7,18 @@ import {
 	initSorse,
 	event,
 	RoundedRect,
+	Collision,
+	Box,
+	SorseClickType,
 } from "sorse";
 import "./styles.css";
 
 class MySprite extends SorseSprite {
 	onInit() {
 		this.position = new Position(100, 100);
+		this.collision = new Collision([
+			new Box(new Position(0, 0), new Position(100, 100)),
+		]);
 		this.shapes = [
 			new RoundedRect({
 				color: "purple",
@@ -23,9 +29,9 @@ class MySprite extends SorseSprite {
 			}),
 			new Rect({
 				position: new Position(0, 0),
-				height: 150,
+				height: 100,
 				width: 100,
-				color: "red",
+				color: "green",
 			}),
 			new Circle({
 				position: new Position(300, 300),
@@ -33,6 +39,14 @@ class MySprite extends SorseSprite {
 				color: "blue",
 			}),
 		];
+	}
+
+	onClick(pos: Position, type: SorseClickType): void {
+		console.log("You clicked at: ", pos, "With:", type);
+	}
+
+	onKeyDown(key: string): void {
+		console.log("You pressed: ", key);
 	}
 }
 

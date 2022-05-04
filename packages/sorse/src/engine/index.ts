@@ -22,6 +22,21 @@ export class Sorse {
 		"abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ-01234567890".split(
 			""
 		);
+	private static _states: Map<string, unknown> = new Map();
+
+	static getState(key: string) {
+		return this._states.get(key);
+	}
+
+	static setState(key: string, value: unknown) {
+		this._states.set(key, value);
+		Sorse.emit("stateChange", "SET", "GLOBAL_VAR", key, value);
+	}
+
+	static deleteState(key: string) {
+		this._states.delete(key);
+		Sorse.emit("stateChange", "DELETE", "GLOBAL_VAR", key);
+	}
 
 	static get id() {
 		const generateId = (): string => {
@@ -82,7 +97,8 @@ export class Sorse {
 			}
 
 			Sorse.context.fillText(
-				"[Sorse] Error: " + `${errorData.file}:${errorData.line} - ${errorData.message}`,
+				"[Sorse] Error: " +
+					`${errorData.file}:${errorData.line} - ${errorData.message}`,
 				10,
 				110,
 				Sorse.canvas.width - 20
@@ -93,29 +109,41 @@ export class Sorse {
 			console.error(err ?? e);
 		};
 
-		window.oncontextmenu = () => {
-			return false;
-		};
+		canvas.onmousedown = (e) => {
+			let key = e.button ?? e.which;
+			const { x, y } = {
+				x: e.clientX - canvas.getBoundingClientRect().left,
+				y: e.clientY - canvas.getBoundingClientRect().top,
+			};
 
-		canvas.onclick = (e) => {
-			const key = e.button ?? e.which;
+			// Legacy + new compatibility
+			if (e.button != undefined) {
+				key++;
+			}
+
 			switch (key) {
 				case 1:
-					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Left);
+					Sorse.emit("rawMouseClick", x, y, SorseClickType.Left);
 					break;
 
 				case 2:
-					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Middle);
+					Sorse.emit("rawMouseClick", x, y, SorseClickType.Middle);
 					break;
 
 				case 3:
-					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Right);
+					Sorse.emit("rawMouseClick", x, y, SorseClickType.Right);
 					break;
 
 				default:
-					Sorse.emit("rawMouseClick", e.x, e.y, SorseClickType.Unknown);
+					Sorse.emit("rawMouseClick", x, y, SorseClickType.Unknown);
 					break;
 			}
+		};
+
+		window.oncontextmenu = (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
 		};
 
 		window.onkeydown = (e) => {

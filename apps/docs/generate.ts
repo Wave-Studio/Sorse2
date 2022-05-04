@@ -24,7 +24,7 @@ for (const file of readdirSync("./docs/")) {
 					crawlDir(`${path}/${file}`);
 				}
 			}
-		}
+		};
 
 		if (page.endsWith(".md")) {
 			verData[page] = readFileSync(`./docs/${file}/${page}`, "utf8");
@@ -40,4 +40,7 @@ try {
 	// Ignore
 }
 
-writeFileSync("./public/docs/structure.json", JSON.stringify(docStructure, null, 4));
+writeFileSync(
+	"./public/docs/structure.json",
+	JSON.stringify(docStructure, null, 4)
+);
