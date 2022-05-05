@@ -12,6 +12,8 @@
 
 Sorse is an easy to use canvas wrapper for typescript. It comes with many built in functions and allows you to get running in seconds with our startup guides. It works with almost any library and can be used in tandum with a web UI. For support please visit [**our discord**](https://discord.gg/jV5Jvt7z)
 
+```git clone sometjing```
+
 ## Table of Contents
 
 - [Contributing](#contributing)
