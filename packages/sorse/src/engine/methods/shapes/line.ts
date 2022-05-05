@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { SorseLineOpts, Position, SorseShapeCore } from "../../../index";
+import { Position, SorseLineOpts, SorseShapeCore } from "../../../index";
 
 export class Line extends SorseShapeCore {
 	private pos1: Position;

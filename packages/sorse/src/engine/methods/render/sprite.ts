@@ -6,11 +6,11 @@
 
 import { Sorse } from "../../index";
 import {
+	Collision,
+	Position,
+	SorseClickType,
 	SorseCore,
 	SorseShapeCore,
-	Position,
-	Collision,
-	SorseClickType,
 } from "../../../index";
 
 export class SorseSprite extends SorseCore {

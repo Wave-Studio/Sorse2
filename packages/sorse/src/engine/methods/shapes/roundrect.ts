@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { SorseShapeCore, SorseRoundRectOpts } from "../../../index";
+import { SorseRoundRectOpts, SorseShapeCore } from "../../../index";
 
 export class RoundedRect extends SorseShapeCore {
 	private _width: number;

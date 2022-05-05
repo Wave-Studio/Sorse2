@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { SorseSquareOpts, Rect, SorseShapeCore } from "../../../index";
+import { Rect, SorseShapeCore, SorseSquareOpts } from "../../../index";
 
 export class Square extends SorseShapeCore {
 	private _sideLength: number;

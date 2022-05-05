@@ -7,10 +7,9 @@
 import { Sorse } from "../index";
 
 export class SorseCore {
-	private _states: Record<string, any> = {};
+	private _states: Map<string, any> = new Map();
 	private _visible: boolean = true;
 	private _id: string = Sorse.id;
-	public name = "";
 
 	set id(id: string) {
 		this._id = id;
@@ -23,6 +22,8 @@ export class SorseCore {
 
 	set visible(value: boolean) {
 		this._visible = value;
+		console.log("a", this._visible);
+		Sorse.emit("stateChange", "SET", "visible", value);
 	}
 
 	get visible(): boolean {
@@ -30,7 +31,7 @@ export class SorseCore {
 	}
 
 	protected getState<T>(name: string): T | undefined {
-		return this._states[name];
+		return this._states.get(name);
 	}
 
 	protected setState<T>(
@@ -38,8 +39,8 @@ export class SorseCore {
 		value: T,
 		replace: boolean = true
 	): boolean {
-		if (replace || !this._states[name]) {
-			this._states[name] = value;
+		if (replace || !this._states.get(name)) {
+			this._states.set(name, value);
 			Sorse.emit("stateChange", "SET", this.id, name, value);
 			return true;
 		}
@@ -47,7 +48,7 @@ export class SorseCore {
 	}
 
 	protected removeState(name: string): boolean {
-		const res = delete this._states[name];
+		const res = this._states.delete(name);
 		Sorse.emit("stateChange", "DELETE", this.id, name, res);
 		return res;
 	}

@@ -5,13 +5,14 @@
 	"main": "src/index.ts",
 	"scripts": {},
 	"keywords": [
-		"game engine",
 		"game",
 		"engine",
 		"typescript",
 		"sorse",
 		"2d"
 	],
+	"dependencies": {},
+	"devDependencies": {},
 	"author": "Wave-Studio",
 	"license": "GPL-3.0-or-later"
 }

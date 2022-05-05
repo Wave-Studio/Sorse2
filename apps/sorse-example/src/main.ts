@@ -1,16 +1,17 @@
 import {
+	Box,
 	Circle,
+	Collision,
+	event,
+	initSorse,
 	Position,
 	Rect,
+	RoundedRect,
+	SorseClickType,
 	SorseScene,
 	SorseSprite,
-	initSorse,
-	event,
-	RoundedRect,
-	Collision,
-	Box,
-	SorseClickType,
 } from "sorse";
+
 import "./styles.css";
 
 class MySprite extends SorseSprite {
@@ -51,13 +52,19 @@ class MySprite extends SorseSprite {
 }
 
 class MyScene extends SorseScene {
-	public onInit(): void {
+	onInit(): void {
 		this.sprites = [new MySprite()];
 	}
 
-	@event("stateChange")
+	//@event("stateChange")
 	onDebug(...args: string[]) {
 		console.log("debug", args);
+	}
+
+	@event("keyDown")
+	key(): void {
+		console.log("Current value:", this.getState("value"));
+		this.setState("value", Math.random());
 	}
 }
 

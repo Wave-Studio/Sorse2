@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { SorseScene, SorsePlugin } from "../";
+import { SorsePlugin, SorseScene } from "../";
 
 export interface InitOpts {
 	/** Name of game */
@@ -27,4 +27,6 @@ export interface InitOpts {
 	/** Scenes of game */
 	scenes: SorseScene[];
 	plugins?: SorsePlugin[];
+	/** Replacement artwork for media control */
+	artwork?: MediaImage[];
 }

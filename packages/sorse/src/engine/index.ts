@@ -3,7 +3,13 @@
  *
  * Developed by Wave-studio
  */
-import { InitOpts, SorseEvents, SorseSprite, SorseClickType } from "../index";
+import {
+	InitOpts,
+	Position,
+	SorseClickType,
+	SorseEvents,
+	SorseSprite,
+} from "../index";
 
 export class Sorse {
 	private static pastSplash = false;
@@ -23,6 +29,14 @@ export class Sorse {
 			""
 		);
 	private static _states: Map<string, unknown> = new Map();
+
+	static get canvasWidth() {
+		return this.canvas.width;
+	}
+
+	static get canvasHeight() {
+		return this.canvas.height;
+	}
 
 	static getState(key: string) {
 		return this._states.get(key);
@@ -67,6 +81,29 @@ export class Sorse {
 		canvas.height = 720;
 		Sorse.context = canvas.getContext("2d")!;
 		let continueRender = true;
+
+		navigator.mediaSession.metadata = new MediaMetadata({
+			title: opts.name,
+			artist:
+				typeof opts.author === "string" ? opts.author : opts.author.join(", "),
+			album: "Sorse Game",
+			artwork: opts.artwork ?? [],
+		});
+
+		for (const action of [
+			"play",
+			"pause",
+			"stop",
+			"seekbackward",
+			"seekforward",
+			"seekto",
+			"previoustrack",
+			"nexttrack",
+		] as MediaSessionAction[]) {
+			navigator.mediaSession.setActionHandler(action, (e) => {
+				return false;
+			});
+		}
 
 		window.onerror = (e, src, lineno, _colno, err) => {
 			continueRender = false;
@@ -147,6 +184,7 @@ export class Sorse {
 		};
 
 		window.onkeydown = (e) => {
+			if (e.repeat) return;
 			const key = e.key.toUpperCase();
 			Sorse.emit("keyDown", key);
 		};
@@ -282,6 +320,18 @@ export class Sorse {
 				);
 				this.canvas.addEventListener("click", listener);
 			} else {
+				for (const host of ["localhost", "127.0.0.1"]) {
+					console.log(location.hostname);
+					if (location.hostname.toLowerCase() === host.toLowerCase()) {
+						Sorse.pastSplash = true;
+						console.log(
+							"[Sorse] Local development detected, Splash scren will not show unless prompted for by browser"
+						);
+						splash.remove();
+						this.emitBulk(["ready"], ["render"]);
+						return;
+					}
+				}
 				startSplash();
 			}
 		});
@@ -291,6 +341,30 @@ export class Sorse {
 			splash.remove();
 			this.emitBulk(["ready"], ["render"]);
 		});
+	}
+
+	static createLinearGradient(pos1: Position, pos2: Position) {
+		return this.context.createLinearGradient(pos1.x, pos1.y, pos2.x, pos2.y);
+	}
+
+	static createRadialGradient(
+		pos1: Position,
+		radius1: number,
+		pos2: Position,
+		radius2: number
+	) {
+		return this.context.createRadialGradient(
+			pos1.x,
+			pos1.y,
+			radius1,
+			pos2.x,
+			pos2.y,
+			radius2
+		);
+	}
+
+	static createPattern(image: CanvasImageSource, repetition?: string) {
+		return this.context.createPattern(image, repetition ?? null);
 	}
 
 	static async emitBulk(

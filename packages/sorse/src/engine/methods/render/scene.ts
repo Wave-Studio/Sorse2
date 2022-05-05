@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 import { Sorse } from "../../index";
-import { SorseCore, SorseSprite, SorseShapeCore } from "../../../index";
+import { SorseCore, SorseShapeCore, SorseSprite } from "../../../index";
 
 export class SorseScene extends SorseCore {
 	private _sprites: SorseSprite[] = [];

@@ -1,5 +1,5 @@
 // Imo fs is much more jank than deno's file stuff - Blocks
-import { readFileSync, mkdirSync, writeFileSync, readdirSync } from "fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 
 const docStructure: Record<string, unknown> = {};
 

@@ -3,10 +3,13 @@ const g = function () {
 	if (e && e.supports && e.supports("modulepreload")) return;
 	for (const n of document.querySelectorAll('link[rel="modulepreload"]')) o(n);
 	new MutationObserver((n) => {
-		for (const i of n)
-			if (i.type === "childList")
-				for (const s of i.addedNodes)
+		for (const i of n) {
+			if (i.type === "childList") {
+				for (const s of i.addedNodes) {
 					s.tagName === "LINK" && s.rel === "modulepreload" && o(s);
+				}
+			}
+		}
 	}).observe(document, { childList: !0, subtree: !0 });
 	function r(n) {
 		const i = {};
@@ -69,8 +72,9 @@ const c = class {
 	}
 	static h(t, e, ...r) {
 		var o;
-		if (typeof t != "string" && !(t instanceof DocumentFragment))
+		if (typeof t != "string" && !(t instanceof DocumentFragment)) {
 			return t(e != null ? e : { children: r });
+		}
 		{
 			if (t == "head") return h({ children: r });
 			const n = c.convertNameToElement(t);
@@ -78,19 +82,20 @@ const c = class {
 				(e == null && (e = { children: void 0 }),
 				n instanceof HTMLElement || n instanceof SVGElement)
 			) {
-				for (const s in e)
-					if (s != "children")
-						if (s.startsWith("on"))
+				for (const s in e) {
+					if (s != "children") {
+						if (s.startsWith("on")) {
 							n.addEventListener(s.substring(2).toLowerCase(), e[s]);
-						else {
+						} else {
 							if (s === "style" && typeof e[s] != "string") {
 								let a = "";
 								for (const u in e[s]) {
 									let p = "";
-									for (const d of u.split(""))
+									for (const d of u.split("")) {
 										d.toLowerCase() == d
 											? (p += d)
 											: (p += `-${d.toLowerCase()}`);
+									}
 									a += `${p}: ${e.style[u]};`;
 								}
 								e[s] = a;
@@ -102,11 +107,13 @@ const c = class {
 							}
 							n.setAttribute(s, e[s]);
 						}
+					}
+				}
 			}
 			const i = (s, a) => {
-				if (a != null)
+				if (a != null) {
 					if (Array.isArray(a)) for (const u of a) i(s, u);
-					else
+					else {
 						typeof a == "string"
 							? t == "raw"
 								? (n.innerHTML += a)
@@ -115,6 +122,8 @@ const c = class {
 							? s.appendChild(a)
 							: typeof a != "boolean" &&
 							  s.appendChild(document.createTextNode(String(a)));
+					}
+				}
 			};
 			for (const s of r) i(n, s);
 			return n;
@@ -242,8 +251,9 @@ class m {
 	static reroutePage(
 		e = location.hash.substring(location.hash.startsWith("#") ? 1 : 0)
 	) {
-		if (((f.states = []), (e = e.toLowerCase()), e === ""))
+		if (((f.states = []), (e = e.toLowerCase()), e === "")) {
 			return this.reroutePage("home");
+		}
 		l.routes[e] != null ? this.renderPage(e) : this.renderPage("404");
 	}
 	static renderPage(e) {

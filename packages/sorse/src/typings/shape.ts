@@ -41,12 +41,7 @@ export interface SorseLineOpts extends SorseColoredShapeOpts {
 }
 
 export interface SorseImageOpts extends SorseShapeOpts {
-	src:
-		| string
-		| HTMLImageElement
-		| HTMLCanvasElement
-		| SVGImageElement
-		| ImageBitmap;
+	src: CanvasImageSource | string;
 	width?: number;
 	height?: number;
 }
