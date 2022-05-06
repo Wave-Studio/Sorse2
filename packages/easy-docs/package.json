@@ -1,0 +1,8 @@
+{
+	"name": "easy-docs",
+	"version": "a",
+	"main": "src/index.ts",
+	"scripts": {},
+	"author": "Wave-Studio",
+	"license": "GPL-3.0-or-later"
+}
