@@ -1,5 +1,5 @@
 import App from "./pages/index";
-import "./app.scss";
+import "./app.css";
 
 WJSRouters.HashRouter.create({
 	home: { title: "sorse Docs", component: App },
