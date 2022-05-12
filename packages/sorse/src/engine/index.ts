@@ -321,7 +321,6 @@ export class Sorse {
 				this.canvas.addEventListener("click", listener);
 			} else {
 				for (const host of ["localhost", "127.0.0.1"]) {
-					console.log(location.hostname);
 					if (location.hostname.toLowerCase() === host.toLowerCase()) {
 						Sorse.pastSplash = true;
 						console.log(

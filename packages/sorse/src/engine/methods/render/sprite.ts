@@ -34,18 +34,18 @@ export class SorseSprite extends SorseCore {
 					y - this._position.y
 				);
 				Sorse.removeID(relativePos.id);
-				this.onClick(relativePos, type);
+				this.onClick.call(this, relativePos, type);
 			}
 		});
 
 		Sorse.on("keyDown", (key) => {
 			if (!this.visible) return;
-			this.onKeyDown(key);
+			this.onKeyDown.call(this, key);
 		});
 
 		Sorse.on("keyUp", (key) => {
 			if (!this.visible) return;
-			this.onKeyUp(key);
+			this.onKeyUp.call(this, key);
 		});
 	}
 
@@ -84,6 +84,7 @@ export class SorseSprite extends SorseCore {
 
 	public render(ctx: CanvasRenderingContext2D) {
 		if (!this.visible) return;
+		this.onRender.call(this);
 		for (const shape of [...this._shapes].reverse()) {
 			shape.render(ctx, this._position.x, this._position.y);
 		}
@@ -97,4 +98,7 @@ export class SorseSprite extends SorseCore {
 
 	/** When a key is no longer held */
 	protected onKeyUp(key: string) {}
+
+	/** On next frame */
+	protected onRender() {}
 }

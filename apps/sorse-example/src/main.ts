@@ -17,11 +17,15 @@ import {
 import "./styles.css";
 
 class MySprite extends SorseSprite {
+	player?: Player;
+
 	onInit() {
+		this.player = new Player("./sound.mp3");
 		this.position = new Position(100, 100);
 		this.collision = new Collision([
 			new Box(new Position(0, 0), new Position(100, 100)),
 		]);
+		this.setState("count", 0);
 		this.shapes = [
 			new RoundedRect({
 				color: "red",
@@ -44,19 +48,15 @@ class MySprite extends SorseSprite {
 		];
 	}
 
-	onClick(pos: Position, type: SorseClickType): void {
+	async onClick(pos: Position, type: SorseClickType) {
 		console.log("You clicked at: ", pos, "With:", type);
 		//this.position = new Position(200, 200);
-		const player = new Player("./sound.mp3")
-		const player2 = new Player("./more-sound.mp3")
-		player.play()
-		setTimeout(() => {
-			player.pause()
-			//player2.play()
-		}, 1000)
-		setTimeout(() => {
-			player.play()
-		}, 1000)
+		const player = this.player!;
+		if (player.playing) {
+			player.pause();
+		} else {
+			await player.resume();
+		}
 		// this.shapes.push(
 		// 	new RoundedRect({
 		// 	color: "blue",
@@ -71,6 +71,12 @@ class MySprite extends SorseSprite {
 
 	onKeyDown(key: string): void {
 		console.log("You pressed: ", key);
+	}
+
+	@event("keyDown")
+	onPress(_key: string): void {
+		console.log("toggling visibility");
+		this.visible = !this.visible;
 	}
 }
 
@@ -121,12 +127,6 @@ class MyScene extends SorseScene {
 	onDebug(...args: string[]) {
 		console.log("debug", args);
 	}
-
-	@event("keyDown")
-	key(): void {
-		console.log("Current value:", this.getState("value"));
-		this.setState("value", Math.random());
-	}
 }
 
 initSorse({
@@ -135,3 +135,4 @@ initSorse({
 	version: "1.0.0",
 	scenes: [new MyScene()],
 });
+

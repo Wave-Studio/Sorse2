@@ -49,15 +49,15 @@ export class SorseScene extends SorseCore {
 		if (!this.visible) return;
 
 		for (const shape of [...(this._sceneBackground ?? [])].reverse()) {
-			shape.render(ctx, 0, 0);
+			shape.render.call(shape, ctx, 0, 0);
 		}
 
 		for (const sprite of [...(this._sprites ?? [])].reverse()) {
-			sprite.render(ctx);
+			sprite.render.call(sprite, ctx);
 		}
 
 		for (const shape of [...(this._overlays ?? [])].reverse()) {
-			shape.render(ctx, 0, 0);
+			shape.render.call(shape, ctx, 0, 0);
 		}
 	}
 }

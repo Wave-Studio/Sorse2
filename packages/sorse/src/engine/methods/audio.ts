@@ -15,9 +15,9 @@ export class Player {
 		}
 	}
 
-	play(timestamp: number = 0) {
+	async play(timestamp: number = 0) {
 		this.src.currentTime = timestamp;
-		this.src.play();
+		await this.src.play();
 		return this;
 	}
 
@@ -32,8 +32,8 @@ export class Player {
 		return this;
 	}
 
-	resume() {
-		this.src.play();
+	async resume() {
+		await this.src.play();
 		return this;
 	}
 

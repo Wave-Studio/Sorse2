@@ -22,7 +22,6 @@ export class SorseCore {
 
 	set visible(value: boolean) {
 		this._visible = value;
-		console.log("a", this._visible);
 		Sorse.emit("stateChange", "SET", "visible", value);
 	}
 

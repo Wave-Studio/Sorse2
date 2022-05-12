@@ -9,8 +9,10 @@ import { Sorse } from "../index";
 
 export const event = (name: keyof SorseEvents) => {
 	return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-		Sorse.on(name, (...args: unknown[]) => {
-			target[propertyKey].call(target, ...args);
-		});
+		console.error("[Sorse] Decorators are currently unsupported due to bugs! Please use Sorse.on instead")
+		// Sorse.on(name, (...args: unknown[]) => {
+		// 	//console.log(target);
+		// 	target[propertyKey].call(target, ...args);
+		// });
 	};
 };
