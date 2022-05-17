@@ -9,3 +9,4 @@ export * from "./engine/decorators/index";
 export * from "./engine/methods/index";
 export * from "./engine/methods/shapes/index";
 export * from "./init";
+export * from "./engine/index";

@@ -8,11 +8,12 @@ import { SorseEvents } from "../../index";
 import { Sorse } from "../index";
 
 export const event = (name: keyof SorseEvents) => {
-	return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-		console.error("[Sorse] Decorators are currently unsupported due to bugs! Please use Sorse.on instead")
-		// Sorse.on(name, (...args: unknown[]) => {
-		// 	//console.log(target);
-		// 	target[propertyKey].call(target, ...args);
-		// });
+
+	throw new Error("[Sorse] Event decorators are not supported due to bugs in Vite, Please use Sorse.on() instead");
+
+	return (target: any, propertyKey: string) => {
+		Sorse.on(name, (...args: unknown[]) => {
+			target[propertyKey].call(target.constructor, ...args);
+		});
 	};
 };

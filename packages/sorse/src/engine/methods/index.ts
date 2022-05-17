@@ -4,6 +4,7 @@
  * Developed by Wave-studio
  */
 
+export * from "./statecore";
 export * from "./core";
 export * from "./render/scene";
 export * from "./render/sprite";

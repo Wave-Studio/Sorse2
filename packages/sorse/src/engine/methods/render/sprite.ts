@@ -70,6 +70,10 @@ export class SorseSprite extends SorseCore {
 		Sorse.emit("stateChange", "SET", this.id, "shapes", shapes);
 	}
 
+	protected pushShape(value: SorseShapeCore) {
+		this.shapes = [...this.shapes, value];
+	}
+
 	/** Sprite position on scene */
 	protected set position(value: Position) {
 		this._position = value;

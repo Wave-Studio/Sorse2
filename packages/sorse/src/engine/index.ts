@@ -11,6 +11,7 @@ import {
 	SorseSprite,
 } from "../index";
 
+/** May cause issues if called before initSorse is */
 export class Sorse {
 	private static pastSplash = false;
 	private static canvas: HTMLCanvasElement;
@@ -183,14 +184,18 @@ export class Sorse {
 			return false;
 		};
 
+		const convertKey = (key: string) => {
+			return key == " " ? "SPACE" : key.toUpperCase();
+		}
+
 		window.onkeydown = (e) => {
 			if (e.repeat) return;
-			const key = e.key.toUpperCase();
+			const key = convertKey(e.key);
 			Sorse.emit("keyDown", key);
 		};
 
 		window.onkeyup = (e) => {
-			const key = e.key.toUpperCase();
+			const key = convertKey(e.key);
 			Sorse.emit("keyUp", key);
 		};
 

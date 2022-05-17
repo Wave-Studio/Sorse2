@@ -2,7 +2,6 @@ import {
 	Box,
 	Circle,
 	Collision,
-	event,
 	initSorse,
 	Position,
 	Rect,
@@ -11,7 +10,7 @@ import {
 	SorseScene,
 	SorseSprite,
 	Player,
-	
+	Sorse
 } from "sorse";
 
 import "./styles.css";
@@ -25,7 +24,6 @@ class MySprite extends SorseSprite {
 		this.collision = new Collision([
 			new Box(new Position(0, 0), new Position(100, 100)),
 		]);
-		this.setState("count", 0);
 		this.shapes = [
 			new RoundedRect({
 				color: "red",
@@ -46,6 +44,11 @@ class MySprite extends SorseSprite {
 				color: "blue",
 			}),
 		];
+
+		// Vite decorator bug be like
+		Sorse.on("keyDown", (key: string) => { 
+			this.onPress.call(this, key); 
+		});
 	}
 
 	async onClick(pos: Position, type: SorseClickType) {
@@ -70,10 +73,9 @@ class MySprite extends SorseSprite {
 	}
 
 	onKeyDown(key: string): void {
-		console.log("You pressed: ", key);
+		console.log("You pressed:", key);
 	}
 
-	@event("keyDown")
 	onPress(_key: string): void {
 		console.log("toggling visibility");
 		this.visible = !this.visible;
