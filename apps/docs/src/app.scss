@@ -1,16 +1,10 @@
-@use "src/theme";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body,
-html,
-#app {
+:root {
 	margin: 0;
 	padding: 0;
-	background-color: theme.$coolGray-700;
-	min-height: 100vh;
-	width: 100vw;
-	color: white;
+	@apply prose prose-invert bg-gray-900; 
 }

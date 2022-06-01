@@ -1,10 +1,14 @@
+import { marked } from 'marked';
+
 export default function Home() {
+	const html = marked.parse('# Marked in Node.js\n\nRendered by **marked**.')
 	return (
-		<div>
-			ws
-			<h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+		<div className="">
+			se
+			<h1>testy</h1>
+<raw>
+	{html}
+	</raw>
 		</div>
 	);
 }
