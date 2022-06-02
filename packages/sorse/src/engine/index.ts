@@ -26,7 +26,7 @@ export class Sorse {
 	}[] = [];
 	private static objectIds: string[] = [];
 	private static idChars =
-		"abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ-01234567890".split(
+		"abcdefghijklmnopqrstuvwxyz_-ABCDEFGHIJKLMNOPQRSTUVWXYZ-01234567890".split(
 			""
 		);
 	private static _states: Map<string, unknown> = new Map();
@@ -43,14 +43,31 @@ export class Sorse {
 		return this._states.get(key);
 	}
 
-	static setState(key: string, value: unknown) {
-		this._states.set(key, value);
-		Sorse.emit("stateChange", "SET", "GLOBAL_VAR", key, value);
+	static setState<T>(name: string, value: T, replace: boolean = true): boolean {
+		if (replace || this._states.get(name) == undefined) {
+			this._states.set(name, value);
+			Sorse.emit("stateChange", "SET", "GLOBAL_VAR", name, value);
+			return true;
+		}
+		return false;
 	}
 
 	static deleteState(key: string) {
 		this._states.delete(key);
 		Sorse.emit("stateChange", "DELETE", "GLOBAL_VAR", key);
+	}
+
+	static state<T>(key: string, initialValue?: T): [T, (args: T) => void] {
+		if (initialValue != undefined) {
+			this.setState(key, initialValue, false);
+		}
+
+		return [
+			this.getState(key) as T,
+			(value: T) => {
+				this.setState(key, value);
+			},
+		];
 	}
 
 	static get id() {
@@ -145,6 +162,12 @@ export class Sorse {
 				"[Sorse] An error occured and Sorse has been disabled to prevent further errors."
 			);
 			console.error(err ?? e);
+
+			for (const [_, audioPlayer] of Object.entries(document.getElementsByTagName("audio"))) {
+				audioPlayer.pause();
+			}
+
+			window.onerror = null;
 		};
 
 		canvas.onmousedown = (e) => {
@@ -186,7 +209,7 @@ export class Sorse {
 
 		const convertKey = (key: string) => {
 			return key == " " ? "SPACE" : key.toUpperCase();
-		}
+		};
 
 		window.onkeydown = (e) => {
 			if (e.repeat) return;
@@ -280,6 +303,7 @@ export class Sorse {
 			"https://cdn.discordapp.com/attachments/722942034549407775/952321187889946624/splash.ogv";
 		const assetDiv = document.createElement("div");
 		assetDiv.style.display = "none";
+		assetDiv.id = "sorse-cache";
 		document.body.appendChild(assetDiv);
 		const splash = document.createElement("video");
 		assetDiv.appendChild(splash);
@@ -369,6 +393,10 @@ export class Sorse {
 
 	static createPattern(image: CanvasImageSource, repetition?: string) {
 		return this.context.createPattern(image, repetition ?? null);
+	}
+
+	static async loadRemoteFont(name: string, remoteURL: string) {
+		await new FontFace(name, `url(${remoteURL})`).load()
 	}
 
 	static async emitBulk(

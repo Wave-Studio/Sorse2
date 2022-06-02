@@ -10,15 +10,25 @@ export class Player {
 	constructor(src: HTMLAudioElement | string) {
 		if (typeof src === "string") {
 			this.src = new Audio(src);
+			document.getElementById("sorse-cache")!.appendChild(this.src);
 		} else {
 			this.src = src;
 		}
 	}
 
-	async play(timestamp: number = 0) {
-		this.src.currentTime = timestamp;
+	async play(volume = 100) {
+		if (volume > 100 || volume < 0) {
+			throw new Error("Volume must be between 0 and 100");
+		}
+
+		this.src.volume = volume/100;
 		await this.src.play();
 		return this;
+	}
+
+	async playAt(time: number) {
+		this.src.currentTime = time;
+		return await this.src.play();
 	}
 
 	pause() {

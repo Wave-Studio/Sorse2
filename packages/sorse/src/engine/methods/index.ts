@@ -13,3 +13,4 @@ export * from "./pos/position";
 export * from "./audio";
 export * from "./pos/collision";
 export * from "./pos/box";
+export * from "./font";

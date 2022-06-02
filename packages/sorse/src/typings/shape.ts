@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { Position } from "../index";
+import { Position, SorseFont } from "../index";
 
 export interface SorseShapeOpts {
 	position: Position;
@@ -25,12 +25,10 @@ export interface SorseRectOpts extends SorseColoredShapeOpts {
 
 export interface SorseTextOpts extends SorseColoredShapeOpts {
 	text: string;
-	size?: number;
-	font?: string;
+	font?: SorseFont;
 	fill?: boolean;
 	align?: CanvasTextAlign;
 	direction?: CanvasDirection;
-	bold?: boolean;
 }
 
 export interface SorseRoundRectOpts extends SorseRectOpts {
