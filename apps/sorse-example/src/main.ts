@@ -9,117 +9,21 @@ import {
 	SorseClickType,
 	SorseScene,
 	SorseSprite,
-	Player,
-	Sorse
+	Sorse,
+	Image,
 } from "sorse";
+
+import { MySprite, AnotherSprite, StartButton, Dude } from "./sprites"
 
 import "./styles.css";
 
-class MySprite extends SorseSprite {
-	player?: Player;
-
-	onInit() {
-		this.player = new Player("./sound.mp3");
-		this.position = new Position(100, 100);
-		this.collision = new Collision([
-			new Box(new Position(0, 0), new Position(100, 100)),
-		]);
-		this.shapes = [
-			new RoundedRect({
-				color: "red",
-				position: new Position(100, 100),
-				height: 100,
-				width: 100,
-				radius: 10,
-			}),
-			new Rect({
-				position: new Position(0, 0),
-				height: 100,
-				width: 100,
-				color: "green",
-			}),
-			new Circle({
-				position: new Position(300, 300),
-				radius: 100,
-				color: "blue",
-			}),
-		];
-
-		// Vite decorator bug be like
-		Sorse.on("keyDown", (key: string) => { 
-			this.onPress.call(this, key); 
-		});
-	}
-
-	async onClick(pos: Position, type: SorseClickType) {
-		console.log("You clicked at: ", pos, "With:", type);
-		//this.position = new Position(200, 200);
-		const player = this.player!;
-		if (player.playing) {
-			player.pause();
-		} else {
-			await player.resume();
-		}
-		// this.shapes.push(
-		// 	new RoundedRect({
-		// 	color: "blue",
-		// 	position: new Position(50, 50),
-		// 	height: 100,
-		// 	width: 100,
-		// 	radius: 10,
-		// }),
-		// )
-		
-	}
-
-	onKeyDown(key: string): void {
-		console.log("You pressed:", key);
-	}
-
-	onPress(_key: string): void {
-		console.log("toggling visibility");
-		this.visible = !this.visible;
-	}
-}
-
-class AnotherSprite extends SorseSprite {
-	onInit() {
-		this.position = new Position(0, 0);
-		this.collision = new Collision([
-			new Box(new Position(0, 0), new Position(100, 100)),
-		]);
-		this.setState("test", "red");
-		this.shapes = [
-			new RoundedRect({
-				color: this.getState("test")!,
-				position: new Position(0, 0),
-				height: 100,
-				width: 100,
-				radius: 10,
-			}),
-		];
-		setTimeout(() => {
-			this.setState("test", "blue");
-		}, 1000)
-		this.visible = false
-	}
-
-	onClick(pos: Position, type: SorseClickType): void {
-		//this.setState("test", "blue");
-		this.shapes[0] = (new RoundedRect({
-			color: "blue",
-			position: new Position(500, 500),
-			height: 100,
-			width: 100,
-			radius: 10,
-		}))
-	}
-}
-
-
+// ---
+// SCENES
+// ---
 
 class MyScene extends SorseScene {
 	public onInit(): void {
+		this.visible = true 
 		this.sprites = [new MySprite(), new AnotherSprite()];
 		//this.sceneBackground = 
 		
@@ -129,12 +33,78 @@ class MyScene extends SorseScene {
 	onDebug(...args: string[]) {
 		console.log("debug", args);
 	}
+	
 }
+
+class Backdrop extends SorseScene {
+	
+	public onInit(): void {
+		this.sceneBackground = [
+			new Image({ src: "./imgs/pokemon.png", position: new Position(-50,-50), width: Sorse.canvasWidth, height: Sorse.canvasHeight })
+		]
+		
+	}
+
+	//@event("stateChange")
+	onDebug(...args: string[]) {
+		console.log("debug", args);
+	}
+}
+
+class Start extends SorseScene {
+	public onInit(): void {
+		//const [started, setStarted] = this.state("started", false);
+		Sorse.setState("started", false)
+		this.visible = !Sorse.getState("started")!
+		this.sprites = [new StartButton()];
+		
+		
+	}
+
+	onClick(pos: Position, type: SorseClickType): void {
+		//const [started, setStarted] = this.state("started");
+		console.log("test")
+		
+	}
+
+	//@event("stateChange")
+	onDebug(...args: string[]) {
+		console.log("debug", args);
+	}
+}
+
+class Game extends SorseScene {
+	public onInit(): void {
+		
+		Sorse.setState("started", false)
+		this.visible = !Sorse.getState("started")!
+		this.sprites = [new Dude()];
+		
+		
+	}
+
+	
+
+	//@event("stateChange")
+	onDebug(...args: string[]) {
+		console.log("debug", args);
+	}
+}
+
+
+
+
+
+// ---
+// OTHER
+// ---
+
+
 
 initSorse({
 	author: "Wave-studio",
 	name: "Test App",
 	version: "1.0.0",
-	scenes: [new MyScene()],
+	scenes: [new Backdrop(), new Start(), new Game()],
 });
 

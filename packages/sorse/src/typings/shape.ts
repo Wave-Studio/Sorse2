@@ -23,6 +23,16 @@ export interface SorseRectOpts extends SorseColoredShapeOpts {
 	height: number;
 }
 
+export interface SorseTextOpts extends SorseColoredShapeOpts {
+	text: string;
+	size?: number;
+	font?: string;
+	fill?: boolean;
+	align?: CanvasTextAlign;
+	direction?: CanvasDirection;
+	bold?: boolean;
+}
+
 export interface SorseRoundRectOpts extends SorseRectOpts {
 	radius: number | { tl: number; tr: number; br: number; bl: number };
 }

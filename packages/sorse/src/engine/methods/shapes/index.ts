@@ -9,6 +9,7 @@ export * from "./core";
 export * from "./rect";
 export * from "./square";
 export * from "./roundrect";
+export * from "./text"
 
 export * from "./circle";
 
