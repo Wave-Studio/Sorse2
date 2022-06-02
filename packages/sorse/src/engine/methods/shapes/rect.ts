@@ -20,7 +20,6 @@ export class Rect extends SorseShapeCore {
 
 	public render(ctx: CanvasRenderingContext2D, x: number, y: number) {
 		ctx.fillStyle = this._color;
-		ctx.strokeStyle = this._color;
 		ctx.beginPath();
 		ctx.rect(
 			x + this._position.x,
@@ -29,7 +28,6 @@ export class Rect extends SorseShapeCore {
 			this._height
 		);
 		ctx.fill();
-		ctx.stroke();
 		ctx.closePath();
 	}
 }

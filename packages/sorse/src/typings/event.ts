@@ -10,7 +10,7 @@ export interface SorseEvents {
 	keyDown: (key: string) => void;
 	keyUp: (key: string) => void;
 	debug: (type: string, ...args: unknown[]) => void;
-	stateChange: (name: string, value: any, type: "set" | "delete") => void;
+	stateChange: (action: "SET" | "DELETE", id: string, stateName: string, value: unknown) => void;
 	rawMouseClick: (x: number, y: number, type: SorseClickType) => void;
 }
 

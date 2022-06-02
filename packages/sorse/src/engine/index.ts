@@ -125,6 +125,7 @@ export class Sorse {
 
 		window.onerror = (e, src, lineno, _colno, err) => {
 			continueRender = false;
+			Sorse.context.textAlign = "left";
 			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
 			Sorse.context.fillStyle = "red";
 			Sorse.context.fillRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
@@ -163,7 +164,9 @@ export class Sorse {
 			);
 			console.error(err ?? e);
 
-			for (const [_, audioPlayer] of Object.entries(document.getElementsByTagName("audio"))) {
+			for (const [_, audioPlayer] of Object.entries(
+				document.getElementsByTagName("audio")
+			)) {
 				audioPlayer.pause();
 			}
 
@@ -267,7 +270,7 @@ export class Sorse {
 							// @ts-expect-error it works
 							window.onerror!(null, "Unknown", 0, 0, e);
 						}
-						for (const shape of sprite.shapes) {
+						for (const shape of [...sprite.shapes].reverse()) {
 							if (shape instanceof SorseSprite) {
 								initSprites([shape]);
 							}
@@ -284,11 +287,21 @@ export class Sorse {
 			Sorse.emit("render");
 		});
 
-		Sorse.on("render", () => {
+		Sorse.on("render", async () => {
 			if (!continueRender) return;
 			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
-			for (const scene of opts.scenes) {
-				scene.render(Sorse.context);
+			for (let i = 0; i < 3; i++) {
+				for (const scene of [...opts.scenes].reverse()) {
+					try {
+						await {
+							0: async () => await scene.renderBackground(Sorse.context),
+							1: async () => await scene.renderSprites(Sorse.context),
+							2: async () => await scene.renderOverlay(Sorse.context),
+						}[i as 0 | 1 | 2]();
+					} catch {
+						window.onerror!("");
+					}
+				}
 			}
 		});
 
@@ -396,7 +409,7 @@ export class Sorse {
 	}
 
 	static async loadRemoteFont(name: string, remoteURL: string) {
-		await new FontFace(name, `url(${remoteURL})`).load()
+		await new FontFace(name, `url(${remoteURL})`).load();
 	}
 
 	static async emitBulk(

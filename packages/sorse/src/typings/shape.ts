@@ -29,6 +29,10 @@ export interface SorseTextOpts extends SorseColoredShapeOpts {
 	fill?: boolean;
 	align?: CanvasTextAlign;
 	direction?: CanvasDirection;
+	border?: {
+		width: number;
+		color: string | CanvasGradient | CanvasPattern
+	};
 }
 
 export interface SorseRoundRectOpts extends SorseRectOpts {

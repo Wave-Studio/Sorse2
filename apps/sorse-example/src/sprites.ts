@@ -6,6 +6,10 @@ import {
 	SorseSprite,
 	Sorse,
 	Text,
+	SorseFont,
+	Rect,
+	rgba,
+	Image,
 } from "sorse";
 
 // ---
@@ -18,28 +22,7 @@ export class MySprite extends SorseSprite {
 		this.collision = new Collision([
 			new Box(new Position(0, 0), new Position(100, 100)),
 		]);
-		// Vite decorator bug be like
-		// Sorse.on("keyDown", (key: string) => {
-		// 	this.onPress.call(this, key);
-		// });
 	}
-	async onClick() {
-		// this.shapes.push(
-		// 	new RoundedRect({
-		// 	color: "blue",
-		// 	position: new Position(50, 50),
-		// 	height: 100,
-		// 	width: 100,
-		// 	radius: 10,
-		// }),)
-	}
-	// onKeyDown(key: string): void {
-	// 	console.log("You pressed:", key);
-	// }
-	// onPress(_key: string): void {
-	// 	console.log("toggling visibility");
-	// 	this.visible = !this.visible;
-	// }
 }
 
 export class AnotherSprite extends SorseSprite {
@@ -64,7 +47,6 @@ export class AnotherSprite extends SorseSprite {
 	}
 
 	onClick(): void {
-		//this.setState("test", "blue");
 		this.shapes[0] = new RoundedRect({
 			color: "blue",
 			position: new Position(500, 500),
@@ -79,11 +61,37 @@ export class StartButton extends SorseSprite {
 	public onInit(): void {
 		console.log(1);
 		this.position = new Position(Sorse.canvasWidth / 2, Sorse.canvasHeight / 2);
+		this.collision = new Collision([
+			new Box(new Position(-100, -25), new Position(100, 25)),
+		]);
 		this.shapes = [
+			new Image({
+				src: "/imgs/logo.png",
+				position: new Position(-100, -100),
+				height: 70,
+				width: 400,
+			}),
+
 			new Text({
 				text: "Play",
+				color: "white",
+				position: new Position(0, 12),
+				font: new SorseFont("Arial", 30, ["bold"]),
+				fill: true,
+				align: "center",
+			}),
+
+			new Text({
+				text: "Budget",
 				color: "black",
-				position: new Position(-50, 12),
+				position: new Position(-100, -100),
+				font: new SorseFont("Arial", 100, ["bold"]),
+				fill: true,
+				//align: "right",
+				border: {
+					width: 5,
+					color: "white",
+				},
 			}),
 
 			new RoundedRect({
@@ -93,52 +101,76 @@ export class StartButton extends SorseSprite {
 				position: new Position(-100, -25),
 				radius: 10,
 			}),
+
+			new Rect({
+				color: rgba(0, 0, 0, 0.7),
+				height: Sorse.canvasHeight,
+				width: Sorse.canvasWidth,
+				position: new Position(Sorse.canvasWidth / -2, Sorse.canvasHeight / -2),
+			}),
 		];
 	}
 	onClick(): void {
 		console.log(2);
-		alert("sss");
+		Sorse.setState("started", true);
 	}
 }
 
 export class Dude extends SorseSprite {
 	onInit() {
-		const [loc] = this.state("loc", { x: 100, y: 100 });
-		this.position = new Position(loc.x, loc.y);
+		this.setState("pressedKeys", []);
+		this.position = new Position(Sorse.canvasWidth / 2, Sorse.canvasHeight / 2);
 		this.collision = new Collision([
 			new Box(new Position(0, 0), new Position(100, 100)),
 		]);
-		// Vite decorator bug be like
-		// Sorse.on("keyDown", (key: string) => {
-		// 	this.onPress.call(this, key);
-		// });
 		this.shapes = [
 			new RoundedRect({
 				color: "blue",
 				position: new Position(0, 0),
-				height: 100,
-				width: 100,
+				height: 20,
+				width: 20,
 				radius: 10,
 			}),
 		];
+
+		setInterval(() => {
+			const [pressedKeys] = this.state<string[]>("pressedKeys");
+			const speed = 2;
+
+			pressedKeys.forEach((key) => {
+				switch (key) {
+					case "W":
+					case "ARROWUP": {
+						this.position.y -= speed;
+						break;
+					}
+					case "S":
+					case "ARROWDOWN": {
+						this.position.y += speed;
+						break;
+					}
+					case "A":
+					case "ARROWLEFT": {
+						this.position.x -= speed;
+						break;
+					}
+					case "D":
+					case "ARROWRIGHT": {
+						this.position.x += speed;
+						break;
+					}
+				}
+			});
+		}, 1000 / 60);
 	}
-	async onClick() {
-		// this.shapes.push(
-		// 	new RoundedRect({
-		// 	color: "blue",
-		// 	position: new Position(50, 50),
-		// 	height: 100,
-		// 	width: 100,
-		// 	radius: 10,
-		// }),)
+
+	onKeyUp(key: string): void {
+		const [pressedKeys, setPressedKeys] = this.state<string[]>("pressedKeys");
+		setPressedKeys(pressedKeys.filter((k) => k !== key));
 	}
+
 	onKeyDown(key: string): void {
-		const [loc, setLoc] = this.state<{ x: number; y: number }>("loc");
-		console.log("You pressed:", key);
-		if (key == "W") setLoc({ x: loc.x, y: loc.y + 10 });
+		const [pressedKeys, setPressedKeys] = this.state<string[]>("pressedKeys");
+		setPressedKeys([...pressedKeys, key]);
 	}
-	// onPress(_key: string): void {
-	// 	console.log("toggling visibility");
-	// 	this.visible = !this.visible;
-	// }
 }

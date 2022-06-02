@@ -11,6 +11,7 @@ export class SorseCore extends SorseStateCore {
 	private _visible: boolean = true;
 
 	set visible(value: boolean) {
+		if (this._visible == value) return;
 		this._visible = value;
 		Sorse.emit("stateChange", "SET", "visible", value);
 	}

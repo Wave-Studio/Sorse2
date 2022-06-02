@@ -19,21 +19,49 @@ export class Image extends SorseShapeCore {
 		this._src = src;
 	}
 
-	public render(ctx: CanvasRenderingContext2D, x: number, y: number) {
+	public async render(ctx: CanvasRenderingContext2D, x: number, y: number) {
 		if (typeof this._src == "string") {
-			const img = document.createElement("img");
-			img.src = this._src;
-			if (this._width == undefined || this._height == undefined) {
-				ctx.drawImage(img, x, y);
-			} else {
-				ctx.drawImage(img, x, y, this._width, this._height);
+			let img = document.querySelector(
+				`img[src="${this._src}"]`
+			) as HTMLImageElement;
+
+			if (img == undefined) {
+				const load = (url: string) => {
+					return new Promise((resolve, reject) => {
+						const img = document.createElement("img");
+						img.src = url;
+						img.onload = () => resolve(img);
+						img.onerror = () =>
+							reject(new Error("Failed to load image " + url));
+						document.getElementById("sorse-cache")!.appendChild(img);
+					});
+				};
+
+				img = (await load(this._src)) as HTMLImageElement;
 			}
-			img.remove();
+
+			if (this._width == undefined || this._height == undefined) {
+				ctx.drawImage(img, x + this._position.x, y + this._position.y);
+			} else {
+				ctx.drawImage(
+					img,
+					x + this._position.x,
+					y + this._position.y,
+					this._width,
+					this._height
+				);
+			}
 		} else {
 			if (this._width == undefined || this._height == undefined) {
-				ctx.drawImage(this._src, x, y);
+				ctx.drawImage(this._src, x + this._position.x, y + this._position.y);
 			} else {
-				ctx.drawImage(this._src, x, y, this._width, this._height);
+				ctx.drawImage(
+					this._src,
+					x + this._position.x,
+					y + this._position.y,
+					this._width,
+					this._height
+				);
 			}
 		}
 	}

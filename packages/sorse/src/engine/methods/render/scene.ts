@@ -57,19 +57,27 @@ export class SorseScene extends SorseCore {
 		}
 	}
 
-	public render(ctx: CanvasRenderingContext2D) {
+	public async renderBackground(ctx: CanvasRenderingContext2D) {
 		if (!this.visible) return;
 
 		for (const shape of [...(this._sceneBackground ?? [])].reverse()) {
-			shape.render.call(shape, ctx, 0, 0);
+			await shape.render.call(shape, ctx, 0, 0);
 		}
+	}
 
-		for (const sprite of [...(this._sprites ?? [])].reverse()) {
-			sprite.render.call(sprite, ctx);
-		}
+	public async renderOverlay(ctx: CanvasRenderingContext2D) {
+		if (!this.visible) return;
 
 		for (const shape of [...(this._overlays ?? [])].reverse()) {
-			shape.render.call(shape, ctx, 0, 0);
+			await shape.render.call(shape, ctx, 0, 0);
+		}
+	}
+
+	public async renderSprites(ctx: CanvasRenderingContext2D) {
+		if (!this.visible) return;
+
+		for (const sprite of [...(this._sprites ?? [])].reverse()) {
+			await sprite.render.call(sprite, ctx);
 		}
 	}
 }

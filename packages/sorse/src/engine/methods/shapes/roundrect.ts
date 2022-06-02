@@ -34,28 +34,28 @@ export class RoundedRect extends SorseShapeCore {
 			this._position.y + y,
 			this._position.x + x + this._width,
 			this._position.y + y + this._height,
-			this._radius.tr
+			this._radius.tr < 0 ? 0 : this._radius.tr
 		);
 		ctx.arcTo(
 			this._position.x + x + this._width,
 			this._position.y + y + this._height,
 			this._position.x + x,
 			this._position.y + y + this._height,
-			this._radius.br
+			this._radius.br < 0 ? 0 : this._radius.br
 		);
 		ctx.arcTo(
 			this._position.x + x,
 			this._position.y + y + this._height,
 			this._position.x + x,
 			this._position.y + y,
-			this._radius.bl
+			this._radius.bl < 0 ? 0 : this._radius.bl
 		);
 		ctx.arcTo(
 			this._position.x + x,
 			this._position.y + y,
 			this._position.x + x + this._width,
 			this._position.y + y,
-			this._radius.tl
+			this._radius.tl < 0 ? 0 : this._radius.tl
 		);
 		ctx.fill();
 		ctx.stroke();

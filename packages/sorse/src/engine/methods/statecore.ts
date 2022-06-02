@@ -28,6 +28,8 @@ export class SorseStateCore {
 		value: T,
 		replace: boolean = true
 	): boolean {
+		if (this._states.get(name) == value) return false;
+
 		if (replace || this._states.get(name) == undefined) {
 			this._states.set(name, value);
 			Sorse.emit("stateChange", "SET", this.id, name, value);
