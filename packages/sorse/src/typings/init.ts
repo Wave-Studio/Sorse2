@@ -4,29 +4,21 @@
  * Developed by Wave-studio
  */
 
-import { SorsePlugin, SorseScene } from "../";
-
-export interface InitOpts {
-	/** Name of game */
+export interface InitOptions {
 	name: string;
-	/** Creator of game */
 	author: string | string[];
-	/** Version of game */
 	version: string | number;
-	/** Description of game */
 	description?: string;
-	/** Canvas options */
-	canvas?: {
-		/** Width of canvas */
-		width?: number | "screen";
-		/** Height of canvas */
-		height?: number | "screen";
-		/** Fullscreenable? */
-		fullscreen?: boolean;
+	canvas: {
+		nativeSize: {
+			width: number;
+			height: number;
+		},
+		/** If not provided uses nativeSize */
+		scaleTo?: {
+			width: number;
+			height: number;
+		}
 	};
-	/** Scenes of game */
-	scenes: SorseScene[];
-	plugins?: SorsePlugin[];
-	/** Replacement artwork for media control */
-	artwork?: MediaImage[];
+	mediaControlArtwork?: MediaImage[];
 }

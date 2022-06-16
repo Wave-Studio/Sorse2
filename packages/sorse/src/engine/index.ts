@@ -3,439 +3,112 @@
  *
  * Developed by Wave-studio
  */
-import {
-	InitOpts,
-	Position,
-	SorseClickType,
-	SorseEvents,
-	SorseSprite,
-} from "../index";
 
-/** May cause issues if called before initSorse is */
+import { type InitOptions } from "../index";
+
 export class Sorse {
-	private static pastSplash = false;
+	private static isPastSplash = false;
 	private static canvas: HTMLCanvasElement;
 	private static context: CanvasRenderingContext2D;
-	private static events: Map<string, ((...args: unknown[]) => void)[]> =
-		new Map();
-	private static pluginData: {
-		name: string;
-		author: string;
-		version: string;
-		description: string;
-	}[] = [];
-	private static objectIds: string[] = [];
-	private static idChars =
-		"abcdefghijklmnopqrstuvwxyz_-ABCDEFGHIJKLMNOPQRSTUVWXYZ-01234567890".split(
-			""
-		);
-	private static _states: Map<string, unknown> = new Map();
+	private static cacheDiv: HTMLDivElement;
 
-	static get canvasWidth() {
-		return this.canvas.width;
-	}
-
-	static get canvasHeight() {
-		return this.canvas.height;
-	}
-
-	static getState(key: string) {
-		return this._states.get(key);
-	}
-
-	static setState<T>(name: string, value: T, replace: boolean = true): boolean {
-		if (replace || this._states.get(name) == undefined) {
-			this._states.set(name, value);
-			Sorse.emit("stateChange", "SET", "GLOBAL_VAR", name, value);
-			return true;
-		}
-		return false;
-	}
-
-	static deleteState(key: string) {
-		this._states.delete(key);
-		Sorse.emit("stateChange", "DELETE", "GLOBAL_VAR", key);
-	}
-
-	static state<T>(key: string, initialValue?: T): [T, (args: T) => void] {
-		if (initialValue != undefined) {
-			this.setState(key, initialValue, false);
-		}
-
-		return [
-			this.getState(key) as T,
-			(value: T) => {
-				this.setState(key, value);
-			},
-		];
-	}
-
-	static get id() {
-		const generateId = (): string => {
-			let str = "";
-
-			for (const _ of new Array(20)) {
-				str += `${
-					this.idChars[Math.floor(Math.random() * this.idChars.length)]
-				}`;
-			}
-
-			return this.objectIds.includes(str) ? generateId() : str;
-		};
-
-		const id = generateId();
-		this.objectIds.push(id);
-		return id;
-	}
-
-	static removeID(id: string) {
-		this.objectIds.splice(this.objectIds.indexOf(id), 1);
-	}
-
-	constructor(opts: InitOpts) {
-		const canvas = (Sorse.canvas = document.createElement("canvas"));
-		canvas.id = "sorse-canvas";
-		canvas.width = 1080;
-		canvas.height = 720;
-		Sorse.context = canvas.getContext("2d")!;
-		let continueRender = true;
-
-		navigator.mediaSession.metadata = new MediaMetadata({
-			title: opts.name,
-			artist:
-				typeof opts.author === "string" ? opts.author : opts.author.join(", "),
-			album: "Sorse Game",
-			artwork: opts.artwork ?? [],
-		});
-
-		for (const action of [
-			"play",
-			"pause",
-			"stop",
-			"seekbackward",
-			"seekforward",
-			"seekto",
-			"previoustrack",
-			"nexttrack",
-		] as MediaSessionAction[]) {
-			navigator.mediaSession.setActionHandler(action, (e) => {
-				return false;
-			});
-		}
-
-		window.onerror = (e, src, lineno, _colno, err) => {
-			continueRender = false;
-			Sorse.context.textAlign = "left";
-			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
-			Sorse.context.fillStyle = "red";
-			Sorse.context.fillRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
-			Sorse.context.fillStyle = "white";
-			Sorse.context.font = "Bold 30px Arial";
-			Sorse.context.fillText("[Sorse] An error occured!", 10, 30);
-			Sorse.context.fillText(
-				"[Sorse] Please alert the game's developer",
-				10,
-				70
-			);
-
-			const errorData = {
-				line: "?",
-				file: "?",
-				message: "?",
-			};
-
-			if (err != undefined) {
-				errorData.message = err.message;
-				errorData.line = lineno!.toString();
-				errorData.file = src!;
-			} else {
-				errorData.message = e.toString() ?? "Unknown error - check console";
-			}
-
-			Sorse.context.fillText(
-				"[Sorse] Error: " +
-					`${errorData.file}:${errorData.line} - ${errorData.message}`,
-				10,
-				110,
-				Sorse.canvas.width - 20
-			);
-			console.error(
-				"[Sorse] An error occured and Sorse has been disabled to prevent further errors."
-			);
-			console.error(err ?? e);
-
-			for (const [_, audioPlayer] of Object.entries(
-				document.getElementsByTagName("audio")
-			)) {
-				audioPlayer.pause();
-			}
-
-			window.onerror = null;
-		};
-
-		canvas.onmousedown = (e) => {
-			let key = e.button ?? e.which;
-			const { x, y } = {
-				x: e.clientX - canvas.getBoundingClientRect().left,
-				y: e.clientY - canvas.getBoundingClientRect().top,
-			};
-
-			// Legacy + new compatibility
-			if (e.button != undefined) {
-				key++;
-			}
-
-			switch (key) {
-				case 1:
-					Sorse.emit("rawMouseClick", x, y, SorseClickType.Left);
-					break;
-
-				case 2:
-					Sorse.emit("rawMouseClick", x, y, SorseClickType.Middle);
-					break;
-
-				case 3:
-					Sorse.emit("rawMouseClick", x, y, SorseClickType.Right);
-					break;
-
-				default:
-					Sorse.emit("rawMouseClick", x, y, SorseClickType.Unknown);
-					break;
-			}
-		};
-
-		window.oncontextmenu = (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-			return false;
-		};
-
-		const convertKey = (key: string) => {
-			return key == " " ? "SPACE" : key.toUpperCase();
-		};
-
-		window.onkeydown = (e) => {
-			if (e.repeat) return;
-			const key = convertKey(e.key);
-			Sorse.emit("keyDown", key);
-		};
-
-		window.onkeyup = (e) => {
-			const key = convertKey(e.key);
-			Sorse.emit("keyUp", key);
-		};
-
-		if (Sorse.context == null) {
-			throw new Error("Canvas not supported");
-		}
-
-		if (opts.canvas && opts.canvas.width) {
-			if (opts.canvas.width == "screen") {
-				canvas.style.width = "100%";
-			} else {
-				canvas.width = opts.canvas.width;
-			}
-		}
-
-		if (opts.canvas && opts.canvas.height) {
-			if (opts.canvas.height == "screen") {
-				canvas.style.height = "100%";
-			} else {
-				canvas.height = opts.canvas.height;
-			}
-		}
-
-		Sorse.on("ready", async () => {
-			for (const Plugin of opts.plugins ?? []) {
-				await Plugin.onInit(Sorse);
-				Sorse.pluginData.push({
-					...Plugin,
-				});
-			}
-
-			Sorse.emit("debug", "Sorse plugins loaded", Sorse.pluginData);
-
-			for (const Scene of opts.scenes ?? []) {
-				try {
-					await Scene.onInit(Sorse);
-				} catch (e) {
-					// @ts-expect-error it works
-					window.onerror!(null, "Unknown", 0, 0, e);
-				}
-				const initSprites = async (sprites: SorseSprite[]) => {
-					for (const sprite of sprites) {
-						try {
-							await sprite.onInit(Sorse);
-						} catch (e) {
-							// @ts-expect-error it works
-							window.onerror!(null, "Unknown", 0, 0, e);
-						}
-						for (const shape of [...sprite.shapes].reverse()) {
-							if (shape instanceof SorseSprite) {
-								initSprites([shape]);
-							}
-						}
-					}
-				};
-
-				initSprites(Scene.sprites);
-			}
-		});
-
-		Sorse.on("stateChange", () => {
-			if (!continueRender) return;
-			Sorse.emit("render");
-		});
-
-		Sorse.on("render", async () => {
-			if (!continueRender) return;
-			Sorse.context.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
-			for (let i = 0; i < 3; i++) {
-				for (const scene of [...opts.scenes].reverse()) {
-					try {
-						await {
-							0: async () => await scene.renderBackground(Sorse.context),
-							1: async () => await scene.renderSprites(Sorse.context),
-							2: async () => await scene.renderOverlay(Sorse.context),
-						}[i as 0 | 1 | 2]();
-					} catch {
-						window.onerror!("");
-					}
-				}
-			}
-		});
-
-		document.body.appendChild(canvas);
-		Sorse.init();
-	}
-
-	// Bri'ish people be like
-	private static init() {
-		// No cdn workaround be like
-		const splashFile =
-			"https://cdn.discordapp.com/attachments/722942034549407775/952321187889946624/splash.ogv";
-		const assetDiv = document.createElement("div");
-		assetDiv.style.display = "none";
-		assetDiv.id = "sorse-cache";
-		document.body.appendChild(assetDiv);
-		const splash = document.createElement("video");
-		assetDiv.appendChild(splash);
-		splash.src = splashFile;
-
-		const startSplash = () => {
-			splash.play();
-			const videoLoop = () => {
-				if (splash && !splash.paused && !splash.ended) {
+	private static playSplash() {
+		if (Sorse.isPastSplash) {
+			return;
+		} else {
+			const splash = document.createElement("video");
+			// No cdn moment
+			splash.src =
+				"https://cdn.discordapp.com/attachments/722942034549407775/952321187889946624/splash.ogv";
+			splash.onloadeddata = () => {
+				const { state } = new AudioContext();
+				const playSplash = () => {
 					this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-					this.context.fillStyle = "black";
-					this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-					this.context.drawImage(
-						splash,
-						0,
-						0,
-						this.canvas.width,
-						this.canvas.height
+					splash.play();
+					const frameLoop = () => {
+						if (!splash.ended) {
+							this.context.clearRect(
+								0,
+								0,
+								this.canvas.width,
+								this.canvas.height
+							);
+							this.context.drawImage(
+								splash,
+								0,
+								0,
+								this.canvas.width,
+								this.canvas.height
+							);
+						} else {
+							postSplash();
+						}
+						requestAnimationFrame(frameLoop);
+					};
+
+					requestAnimationFrame(frameLoop);
+				};
+
+				const postSplash = () => {
+					Sorse.isPastSplash = true;
+				};
+
+				if (state === "suspended") {
+					const ctx = this.context;
+					ctx.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
+					ctx.fillStyle = "black";
+					ctx.fillRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
+					ctx.fillStyle = "white";
+					ctx.font = "50px Arial";
+					this.context.fillText(
+						"Click to play",
+						this.canvas.width / 2 - 150,
+						this.canvas.height / 2
 					);
-					requestAnimationFrame(videoLoop);
+					this.canvas.onclick = () => {
+						this.canvas.onclick = null;
+						playSplash();
+					};
+				} else {
+					for (const uri of ["localhost", "127.0.0.1"]) {
+						if (location.hostname.toLowerCase() === uri.toLowerCase()) {
+							postSplash();
+							return;
+						}
+					}
+					playSplash();
 				}
 			};
-			requestAnimationFrame(videoLoop);
-		};
-
-		splash.addEventListener("loadeddata", () => {
-			const state = new AudioContext().state;
-
-			if (state === "suspended") {
-				const listener = () => {
-					this.canvas.removeEventListener("click", listener);
-					startSplash();
-				};
-				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-				this.context.fillStyle = "black";
-				this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-				this.context.fillStyle = "white";
-				this.context.font = "50px Arial";
-				this.context.fillText(
-					"Click to play",
-					this.canvas.width / 2 - 150,
-					this.canvas.height / 2
-				);
-				this.canvas.addEventListener("click", listener);
-			} else {
-				for (const host of ["localhost", "127.0.0.1"]) {
-					if (location.hostname.toLowerCase() === host.toLowerCase()) {
-						Sorse.pastSplash = true;
-						console.log(
-							"[Sorse] Local development detected, Splash scren will not show unless prompted for by browser"
-						);
-						splash.remove();
-						this.emitBulk(["ready"], ["render"]);
-						return;
-					}
-				}
-				startSplash();
-			}
-		});
-
-		splash.addEventListener("ended", () => {
-			Sorse.pastSplash = true;
-			splash.remove();
-			this.emitBulk(["ready"], ["render"]);
-		});
-	}
-
-	static createLinearGradient(pos1: Position, pos2: Position) {
-		return this.context.createLinearGradient(pos1.x, pos1.y, pos2.x, pos2.y);
-	}
-
-	static createRadialGradient(
-		pos1: Position,
-		radius1: number,
-		pos2: Position,
-		radius2: number
-	) {
-		return this.context.createRadialGradient(
-			pos1.x,
-			pos1.y,
-			radius1,
-			pos2.x,
-			pos2.y,
-			radius2
-		);
-	}
-
-	static createPattern(image: CanvasImageSource, repetition?: string) {
-		return this.context.createPattern(image, repetition ?? null);
-	}
-
-	static async loadRemoteFont(name: string, remoteURL: string) {
-		await new FontFace(name, `url(${remoteURL})`).load();
-	}
-
-	static async emitBulk(
-		...events: [keyof SorseEvents, ...unknown[]][]
-	): Promise<void>;
-	static async emitBulk(...events: [string, ...unknown[]][]): Promise<void> {
-		for (const event of events) {
-			await this.emit(event[0] as keyof SorseEvents, ...event.slice(1));
 		}
 	}
 
-	static async emit(
-		event: keyof SorseEvents,
-		...data: unknown[]
-	): Promise<void>;
-	static async emit(event: string, ...data: unknown[]): Promise<void> {
-		if (!this.pastSplash) return;
-		for (const func of this.events.get(event) ?? []) {
-			func(...data);
-		}
-	}
+	public static init(opts: InitOptions) {
+		const canvas =
+			document.getElementById("sorse") != undefined
+				? (document.getElementById("sorse") as HTMLCanvasElement)
+				: (() => {
+						const canvas = document.createElement("canvas");
+						canvas.id = "sorse";
+						document.body.appendChild(canvas);
+						return canvas;
+				  })();
+		const context = canvas.getContext("2d");
+		const cacheDiv = document.createElement("div");
 
-	static on<T extends keyof SorseEvents>(event: T, callback: SorseEvents[T]) {
-		const events = this.events.get(event) ?? [];
-		// @ts-ignore
-		events.push(callback);
-		this.events.set(event, events);
+		cacheDiv.id = "sorse-cache";
+		cacheDiv.style.display = "none";
+		document.body.appendChild(cacheDiv);
+		canvas.width = opts.canvas.scaleTo?.width ?? opts.canvas.nativeSize.width;
+		canvas.height =
+			opts.canvas.scaleTo?.height ?? opts.canvas.nativeSize.height;
+
+		if (context == null) {
+			throw new Error("Canvas context is null");
+		} else {
+			Sorse.canvas = canvas;
+			Sorse.context = context;
+			Sorse.cacheDiv = cacheDiv;
+			Sorse.playSplash();
+		}
 	}
 }

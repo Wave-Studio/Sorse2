@@ -3,6 +3,9 @@
 # Documentation deps
 public/docs/structure.json
 
+# Legacy code
+packages/sorse-old
+
 # dependencies
 node_modules
 .pnp

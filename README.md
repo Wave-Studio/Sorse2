@@ -10,6 +10,8 @@
 [![forthebadge](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)](https://forthebadge.com)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=for-the-badge)](https://github.com/RichardLitt/standard-readme)
 
+## Sorse is currently in the middle of a rewrite using JSX over the current api, updates will occur soon!
+
 Sorse is an easy to use canvas wrapper for typescript. It comes with many built
 in functions and allows you to get running in seconds with our startup guides.
 It works with almost any library and can be used in tandum with a web UI. For
