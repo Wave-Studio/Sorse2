@@ -1,4 +1,4 @@
-/**
+/*
  * Sorse 2
  *
  * Developed by Wave-studio
@@ -9,6 +9,7 @@ export interface InitOptions {
 	author: string | string[];
 	version: string | number;
 	description?: string;
+	component: unknown;
 	canvas: {
 		nativeSize: {
 			width: number;
