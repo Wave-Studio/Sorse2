@@ -5,8 +5,6 @@
  */
 
 // Engine stuff
+export * from "./typings/index";
 export * from "./engine/index";
 export * from "./engine/methods/index";
-
-// Typings
-export * from "./typings/init";

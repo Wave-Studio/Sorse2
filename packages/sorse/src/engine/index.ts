@@ -4,7 +4,13 @@
  * Developed by Wave-studio
  */
 
-import { type InitOptions, type Position } from "../index";
+import {
+	type InitOptions,
+	Position,
+	type ShapeReturn,
+	ShapeType,
+} from "../index";
+import { Container } from "./methods/jsx";
 
 export class Sorse {
 	private static isPastSplash = false;
@@ -148,25 +154,42 @@ export class Sorse {
 	}
 
 	static h(
-		tagName:
-			| "fragment"
-			| (({
-					props,
-					children,
-			  }: {
-					props: Record<string, unknown>;
-					children: unknown[];
-			  }) => unknown),
+		tagName: "fragment" | ((props: Record<string, unknown>) => ShapeReturn),
 		props: Record<string, unknown>,
-		...children: unknown[]
-	) {
+		...children: ShapeReturn[]
+	): ShapeReturn {
 		if (tagName == "fragment") {
-			return {
-				type: "container",
-				children,
-			};
+			tagName = Container;
+		}
+
+		return (tagName as (props: Record<string, unknown>) => ShapeReturn)({
+			...props,
+			children,
+		});
+	}
+
+	// TODO: This.
+
+	// Render engine
+	private static renderFromJSON(
+		shapes: ShapeReturn,
+		positionOffset: Position = new Position(0, 0),
+		renderTree: boolean = true
+	) {
+		if (shapes.type === ShapeType.Container) {
+			const { children, visible, offset } = shapes;
+			let newOffset = new Position(
+				positionOffset.x + (offset?.x ?? 0),
+				positionOffset.y + (offset?.y ?? 0)
+			);
+			for (const child of children) {
+				this.renderFromJSON(child, newOffset, renderTree && visible && true);
+			}
 		} else {
-			return tagName({ props, children });
+			switch (shapes.type) {
+				case ShapeType.Rectangle: {
+				}
+			}
 		}
 	}
 }

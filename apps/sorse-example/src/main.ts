@@ -31,20 +31,17 @@ class Backdrop extends SorseScene {
 	onDebug(...args: string[]) {
 		console.log("debug", args);
 	}
-
-	
 }
 
 class Start extends SorseScene {
 	public onInit(): void {
-		
 		//const [started, setStarted] = this.state("started", false);
 		Sorse.setState("started", false);
-		this.visible = true
+		this.visible = true;
 		this.sprites = [new StartButton()];
 		Sorse.on("stateChange", (_, __, name, value) => {
 			if (name == "started" && value == true) {
-				this.visible = false
+				this.visible = false;
 			}
 		});
 	}
@@ -58,19 +55,16 @@ class Start extends SorseScene {
 	onDebug(...args: string[]) {
 		console.log("debug", args);
 	}
-
-	
 }
 
 class Game extends SorseScene {
 	public onInit(): void {
-		
-		this.visible = false
+		this.visible = false;
 		this.sprites = [new Dude()];
 
 		Sorse.on("stateChange", (_, __, name, value) => {
 			if (name == "started" && value == true) {
-				this.visible = true
+				this.visible = true;
 			}
 		});
 	}

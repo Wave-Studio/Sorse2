@@ -14,12 +14,12 @@ export interface InitOptions {
 		nativeSize: {
 			width: number;
 			height: number;
-		},
+		};
 		/** If not provided uses nativeSize */
 		scaleTo?: {
 			width: number;
 			height: number;
-		}
+		};
 	};
 	mediaControlArtwork?: MediaImage[];
 }

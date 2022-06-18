@@ -4,4 +4,5 @@
  * Developed by Wave-studio
  */
 
-export * from "./utils/position";
+export * from "./init";
+export * from "./shapes";
