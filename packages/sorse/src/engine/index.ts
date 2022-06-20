@@ -19,6 +19,7 @@ export class Sorse {
 	private static context: CanvasRenderingContext2D;
 	private static gameScaleFactorWidth: number;
 	private static gameScaleFactorHeight: number;
+	private static opts: InitOptions;
 
 	static get scaleFactorHeight() {
 		return this.gameScaleFactorHeight;
@@ -30,8 +31,25 @@ export class Sorse {
 
 	// None of this shit makes any sense - Blocks
 
+	private static startRenderLoop() {
+		if (!this.isPastSplash) return;
+		const frameLoop = async () => {
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			await this.render();
+			//requestAnimationFrame(frameLoop);
+		};
+
+		requestAnimationFrame(frameLoop);
+	}
+
+	private static async render() {
+		const res = this.opts.component();
+
+		await this.renderFromJSON(res);
+	}
+
 	private static playSplash() {
-		if (Sorse.isPastSplash) {
+		if (this.isPastSplash) {
 			return;
 		} else {
 			const splash = document.createElement("video");
@@ -68,14 +86,15 @@ export class Sorse {
 				};
 
 				const postSplash = () => {
-					Sorse.isPastSplash = true;
+					this.isPastSplash = true;
+					this.startRenderLoop();
 				};
 
 				if (state === "suspended") {
 					const ctx = this.context;
-					ctx.clearRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
+					ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 					ctx.fillStyle = "black";
-					ctx.fillRect(0, 0, Sorse.canvas.width, Sorse.canvas.height);
+					ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 					ctx.fillStyle = "white";
 					ctx.font = "50px Arial";
 					this.context.fillText(
@@ -133,17 +152,18 @@ export class Sorse {
 		if (context == null) {
 			throw new Error("Canvas context is null");
 		} else {
-			Sorse.canvas = canvas;
-			Sorse.context = context;
-			Sorse.playSplash();
+			this.canvas = canvas;
+			this.context = context;
+			this.opts = opts;
+			this.playSplash();
 		}
 	}
 
-	static createLinearGradient(pos1: Position, pos2: Position) {
+	public static createLinearGradient(pos1: Position, pos2: Position) {
 		return this.context.createLinearGradient(pos1.x, pos1.y, pos2.x, pos2.y);
 	}
 
-	static createRadialGradient(
+	public static createRadialGradient(
 		pos1: Position,
 		radius1: number,
 		pos2: Position,
@@ -159,20 +179,20 @@ export class Sorse {
 		);
 	}
 
-	static createPattern(image: CanvasImageSource, repetition?: string) {
+	public static createPattern(image: CanvasImageSource, repetition?: string) {
 		return this.context.createPattern(image, repetition ?? null);
 	}
 
-	static async loadRemoteFont(name: string, remoteURL: string) {
+	public static async loadRemoteFont(name: string, remoteURL: string) {
 		await new FontFace(name, `url(${remoteURL})`).load();
 	}
 
 	// JSX aspect of Sorse
-	static f() {
+	public static f() {
 		return "fragment";
 	}
 
-	static h(
+	public static h(
 		tagName: "fragment" | ((props: Record<string, unknown>) => ShapeReturn),
 		props: Record<string, unknown>,
 		...children: ShapeReturn[]
@@ -183,11 +203,9 @@ export class Sorse {
 
 		return (tagName as (props: Record<string, unknown>) => ShapeReturn)({
 			...props,
-			children,
+			children: children ?? [],
 		});
 	}
-
-	// TODO: This.
 
 	// Render engine
 	private static async renderFromJSON(
@@ -195,6 +213,10 @@ export class Sorse {
 		positionOffset: Position = new Position(0, 0),
 		renderRestOfTree: boolean = true
 	) {
+		this.context.fillStyle = "black";
+		this.context.strokeStyle = "black";
+		this.context.lineWidth = 1;
+
 		const offset = new Position(
 			positionOffset.x + (shape.offset?.x ?? 0),
 			positionOffset.y + (shape.offset?.y ?? 0)
@@ -218,9 +240,6 @@ export class Sorse {
 				};
 				this.context.strokeStyle = color;
 				this.context.lineWidth = width;
-			} else {
-				this.context.strokeStyle = "black";
-				this.context.lineWidth = 1;
 			}
 
 			switch (shape.type) {
@@ -234,7 +253,9 @@ export class Sorse {
 						height * this.gameScaleFactorHeight
 					);
 					this.context.fill();
-					this.context.stroke();
+					if (shape.border != undefined) {
+						this.context.stroke();
+					}
 					break;
 				}
 
@@ -251,7 +272,9 @@ export class Sorse {
 					this.context.moveTo(drawPosition.x, drawPosition.y);
 					this.context.closePath();
 					this.context.fill();
-					this.context.stroke();
+					if (shape.border != undefined) {
+						this.context.stroke();
+					}
 					this.context.restore();
 					break;
 				}
@@ -266,7 +289,9 @@ export class Sorse {
 						2 * Math.PI
 					);
 					this.context.fill();
-					this.context.stroke();
+					if (shape.border != undefined) {
+						this.context.stroke();
+					}
 					break;
 				}
 
@@ -293,7 +318,9 @@ export class Sorse {
 					this.context.textAlign = align ?? "left";
 					this.context.direction = direction ?? "ltr";
 					this.context.fillText(text, drawPosition.x, drawPosition.y);
-					this.context.strokeText(text, drawPosition.x, drawPosition.y);
+					if (shape.border != undefined) {
+						this.context.strokeText(text, drawPosition.x, drawPosition.y);
+					}
 					break;
 				}
 
@@ -336,7 +363,7 @@ export class Sorse {
 			}
 		}
 
-		for (const child of shape.children) {
+		for (const child of shape.children ?? []) {
 			await this.renderFromJSON(child, offset, visible);
 		}
 	}

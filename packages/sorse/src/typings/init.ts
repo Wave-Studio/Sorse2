@@ -4,12 +4,14 @@
  * Developed by Wave-studio
  */
 
+import { type ShapeReturn } from "../index";
+
 export interface InitOptions {
 	name: string;
 	author: string | string[];
 	version: string | number;
 	description?: string;
-	component: unknown;
+	component: () => ShapeReturn;
 	canvas: {
 		nativeSize: {
 			width: number;

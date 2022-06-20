@@ -23,7 +23,7 @@ export const Text = ({
 	direction,
 }: TextProps): ShapeReturn => {
 	return {
-		type: ShapeType.Line,
+		type: ShapeType.Text,
 		children: children ?? [],
 		color,
 		pos,
