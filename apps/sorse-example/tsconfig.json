@@ -13,7 +13,10 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noImplicitReturns": true,
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"jsx": "react",
+		"jsxFactory": "Sorse.h",
+		"jsxFragmentFactory": "Sorse.f"
 	},
 	"include": ["src"]
 }

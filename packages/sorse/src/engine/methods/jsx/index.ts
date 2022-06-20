@@ -8,5 +8,7 @@ export * from "./square";
 export * from "./rectangle";
 export * from "./polygon";
 export * from "./line";
-export * from "./sphere";
+export * from "./circle";
 export * from "./container";
+export * from "./text";
+export * from "./image";

@@ -14,7 +14,10 @@
 		"skipLibCheck": true,
 		"strict": true,
 		"experimentalDecorators": true,
-		"target": "ES5"
+		"target": "ES5",
+		"jsx": "react",
+		"jsxFactory": "Sorse.h",
+		"jsxFragmentFactory": "Sorse.f"
 	},
 	"exclude": ["node_modules"]
 }

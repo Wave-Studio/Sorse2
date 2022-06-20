@@ -9,14 +9,24 @@ import {
 	Position,
 	type ShapeReturn,
 	ShapeType,
+	type Font,
+	Container,
 } from "../index";
-import { Container } from "./methods/jsx";
 
 export class Sorse {
 	private static isPastSplash = false;
 	private static canvas: HTMLCanvasElement;
 	private static context: CanvasRenderingContext2D;
-	private static cacheDiv: HTMLDivElement;
+	private static gameScaleFactorWidth: number;
+	private static gameScaleFactorHeight: number;
+
+	static get scaleFactorHeight() {
+		return this.gameScaleFactorHeight;
+	}
+
+	static get scaleFactorWidth() {
+		return this.gameScaleFactorWidth;
+	}
 
 	// None of this shit makes any sense - Blocks
 
@@ -103,6 +113,16 @@ export class Sorse {
 		const context = canvas.getContext("2d");
 		const cacheDiv = document.createElement("div");
 
+		if (opts.canvas.scaleTo != undefined) {
+			this.gameScaleFactorWidth =
+				opts.canvas.scaleTo.width / opts.canvas.nativeSize.width;
+			this.gameScaleFactorHeight =
+				opts.canvas.scaleTo.height / opts.canvas.nativeSize.height;
+		} else {
+			this.gameScaleFactorHeight = 1;
+			this.gameScaleFactorWidth = 1;
+		}
+
 		cacheDiv.id = "sorse-cache";
 		cacheDiv.style.display = "none";
 		document.body.appendChild(cacheDiv);
@@ -115,7 +135,6 @@ export class Sorse {
 		} else {
 			Sorse.canvas = canvas;
 			Sorse.context = context;
-			Sorse.cacheDiv = cacheDiv;
 			Sorse.playSplash();
 		}
 	}
@@ -171,25 +190,154 @@ export class Sorse {
 	// TODO: This.
 
 	// Render engine
-	private static renderFromJSON(
-		shapes: ShapeReturn,
+	private static async renderFromJSON(
+		shape: ShapeReturn,
 		positionOffset: Position = new Position(0, 0),
-		renderTree: boolean = true
+		renderRestOfTree: boolean = true
 	) {
-		if (shapes.type === ShapeType.Container) {
-			const { children, visible, offset } = shapes;
-			let newOffset = new Position(
-				positionOffset.x + (offset?.x ?? 0),
-				positionOffset.y + (offset?.y ?? 0)
-			);
-			for (const child of children) {
-				this.renderFromJSON(child, newOffset, renderTree && visible && true);
+		const offset = new Position(
+			positionOffset.x + (shape.offset?.x ?? 0),
+			positionOffset.y + (shape.offset?.y ?? 0)
+		);
+		const drawPosition = new Position(
+			offset.x +
+				(shape.pos?.x ?? (shape.start as Position | undefined)?.x ?? 0),
+			offset.y + (shape.pos?.y ?? (shape.start as Position | undefined)?.y ?? 0)
+		);
+		const visible = shape.visible && renderRestOfTree && true;
+
+		if (shape.type != ShapeType.Container) {
+			this.context.fillStyle =
+				(shape.color as string | CanvasPattern | CanvasGradient | undefined) ??
+				"black";
+
+			if (shape.border != undefined) {
+				const { color, width } = shape.border as {
+					color: string | CanvasPattern | CanvasGradient;
+					width: number;
+				};
+				this.context.strokeStyle = color;
+				this.context.lineWidth = width;
+			} else {
+				this.context.strokeStyle = "black";
+				this.context.lineWidth = 1;
 			}
-		} else {
-			switch (shapes.type) {
+
+			switch (shape.type) {
 				case ShapeType.Rectangle: {
+					const width = shape.width as number;
+					const height = shape.height as number;
+					this.context.rect(
+						drawPosition.x,
+						drawPosition.y,
+						width * this.gameScaleFactorWidth,
+						height * this.gameScaleFactorHeight
+					);
+					this.context.fill();
+					this.context.stroke();
+					break;
+				}
+
+				case ShapeType.Polygon: {
+					this.context.save();
+					this.context.moveTo(drawPosition.x, drawPosition.y);
+					this.context.beginPath();
+					for (const point of shape.points as Position[]) {
+						this.context.lineTo(
+							drawPosition.x + point.x,
+							drawPosition.y + point.y
+						);
+					}
+					this.context.moveTo(drawPosition.x, drawPosition.y);
+					this.context.closePath();
+					this.context.fill();
+					this.context.stroke();
+					this.context.restore();
+					break;
+				}
+
+				case ShapeType.Circle: {
+					const radius = shape.radius as number;
+					this.context.arc(
+						drawPosition.x,
+						drawPosition.y,
+						radius,
+						0,
+						2 * Math.PI
+					);
+					this.context.fill();
+					this.context.stroke();
+					break;
+				}
+
+				case ShapeType.Line: {
+					const start = shape.start as Position;
+					const end = shape.end as Position;
+					this.context.moveTo(
+						drawPosition.x + start.x,
+						drawPosition.y + start.y
+					);
+					this.context.beginPath();
+					this.context.lineTo(drawPosition.x + end.x, drawPosition.y + end.y);
+					this.context.closePath();
+					this.context.stroke();
+					break;
+				}
+
+				case ShapeType.Text: {
+					const text = shape.text as string;
+					const font = shape.font as Font;
+					const align = shape.align as CanvasTextAlign | undefined;
+					const direction = shape.direction as CanvasDirection | undefined;
+					this.context.font = font.font;
+					this.context.textAlign = align ?? "left";
+					this.context.direction = direction ?? "ltr";
+					this.context.fillText(text, drawPosition.x, drawPosition.y);
+					this.context.strokeText(text, drawPosition.x, drawPosition.y);
+					break;
+				}
+
+				case ShapeType.Image: {
+					const image = shape.image as CanvasImageSource | string;
+					const width = shape.width as number | undefined;
+					const height = shape.height as number | undefined;
+					const imageSource =
+						typeof image == "string"
+							? ((await new Promise((resolve, reject) => {
+									if (document.getElementById(image) != null) {
+										resolve(document.getElementById(image) as HTMLImageElement);
+									} else {
+										const img = document.createElement("img");
+										img.onload = () => {
+											document.getElementById("sorse-cache")!.appendChild(img);
+											resolve(img);
+										};
+										img.onerror = () =>
+											reject(new Error("Failed to load image " + image));
+										img.id = image;
+										img.src = image;
+									}
+							  })) as HTMLImageElement)
+							: image;
+
+					if (width != undefined && height != undefined) {
+						this.context.drawImage(
+							imageSource,
+							drawPosition.x,
+							drawPosition.y,
+							width * this.gameScaleFactorWidth,
+							height * this.gameScaleFactorHeight
+						);
+					} else {
+						this.context.drawImage(imageSource, drawPosition.x, drawPosition.y);
+					}
+					break;
 				}
 			}
+		}
+
+		for (const child of shape.children) {
+			await this.renderFromJSON(child, offset, visible);
 		}
 	}
 }

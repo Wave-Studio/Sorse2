@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { Position } from "../index";
+import { Position, Font } from "../index";
 
 export interface ShapeProps {
 	pos?: Position;
@@ -23,11 +23,12 @@ export interface ColoredShapeProps extends ShapeProps {
 
 export enum ShapeType {
 	Container,
-	Square,
 	Rectangle,
 	Polygon,
 	Line,
-	Sphere,
+	Circle,
+	Text,
+	Image,
 }
 
 export interface ShapeReturn {
@@ -65,6 +66,19 @@ export interface LineProps extends ShapeProps {
 	color: string | CanvasPattern | CanvasGradient;
 }
 
-export interface SphereProps extends ColoredShapeProps {
+export interface CircleProps extends ColoredShapeProps {
 	radius: number;
+}
+
+export interface TextProps extends ColoredShapeProps {
+	font?: Font;
+	text: string;
+	align?: "center" | "end" | "left" | "right" | "start";
+	direction?: "inherit" | "ltr" | "rtl";
+}
+
+export interface ImageProps extends ShapeProps {
+	src: string | CanvasImageSource;
+	width?: number;
+	height?: number;
 }

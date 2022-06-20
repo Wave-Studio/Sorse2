@@ -4,18 +4,18 @@
  * Developed by Wave-studio
  */
 
-import { type SphereProps, type ShapeReturn, ShapeType } from "../../../index";
+import { type CircleProps, type ShapeReturn, ShapeType } from "../../../index";
 
-export const Sphere = ({
+export const Circle = ({
 	children,
 	color,
 	pos,
 	radius,
 	border,
 	visible,
-}: SphereProps): ShapeReturn => {
+}: CircleProps): ShapeReturn => {
 	return {
-		type: ShapeType.Sphere,
+		type: ShapeType.Circle,
 		children: children ?? [],
 		color,
 		pos,
