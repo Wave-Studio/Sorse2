@@ -20,6 +20,8 @@ export class Sorse {
 	private static gameScaleFactorWidth: number;
 	private static gameScaleFactorHeight: number;
 	private static opts: InitOptions;
+	private static width: number;
+	private static height: number;
 
 	static get scaleFactorHeight() {
 		return this.gameScaleFactorHeight;
@@ -27,6 +29,22 @@ export class Sorse {
 
 	static get scaleFactorWidth() {
 		return this.gameScaleFactorWidth;
+	}
+
+	static get nativeWidth() {
+		return this.width;
+	}
+
+	static get nativeHeight() {
+		return this.height;
+	}
+
+	static get renderedWidth() {
+		return this.width * this.gameScaleFactorWidth;
+	}
+
+	static get renderedHeight() {
+		return this.height * this.gameScaleFactorHeight;
 	}
 
 	// None of this shit makes any sense - Blocks
@@ -44,7 +62,7 @@ export class Sorse {
 
 	private static async render() {
 		const res = this.opts.component();
-
+		console.log(JSON.stringify(res));
 		await this.renderFromJSON(res);
 	}
 
@@ -155,6 +173,8 @@ export class Sorse {
 			this.canvas = canvas;
 			this.context = context;
 			this.opts = opts;
+			this.width = opts.canvas.nativeSize.width;
+			this.height = opts.canvas.nativeSize.height;
 			this.playSplash();
 		}
 	}
@@ -188,7 +208,7 @@ export class Sorse {
 	}
 
 	// JSX aspect of Sorse
-	public static f() {
+	public static get f() {
 		return "fragment";
 	}
 

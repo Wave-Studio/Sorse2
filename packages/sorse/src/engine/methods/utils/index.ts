@@ -7,3 +7,4 @@
 export * from "./position";
 export * from "./rgb";
 export * from "./font";
+export * from "./percent";

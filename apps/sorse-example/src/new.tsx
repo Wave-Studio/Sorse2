@@ -14,17 +14,19 @@ Sorse.init({
 	// confused unga bunga
 	component: () => {
 		return (
-			<Rectangle width={800} height={600} color={"green"}>
-				<Square
-					sideLength={100}
-					color={"red"}
-					border={{
-						width: 20,
-						color: "blue",
-					}}
-					pos={new Position(100, 100)}
-				/>
-			</Rectangle>
+			<>
+				<Rectangle width={800} height={600} color={"green"}>
+					<Square
+						sideLength={100}
+						color={"red"}
+						border={{
+							width: 20,
+							color: "blue",
+						}}
+						pos={new Position(100, 100)}
+					/>
+				</Rectangle>
+			</>
 		);
 	},
 });
