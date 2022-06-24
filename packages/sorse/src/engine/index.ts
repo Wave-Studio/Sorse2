@@ -236,15 +236,15 @@ export class Sorse {
 		this.context.fillStyle = "black";
 		this.context.strokeStyle = "black";
 		this.context.lineWidth = 1;
+		shape.pos = shape.pos ?? new Position(0, 0);
 
 		const offset = new Position(
 			positionOffset.x + (shape.offset?.x ?? 0),
 			positionOffset.y + (shape.offset?.y ?? 0)
 		);
 		const drawPosition = new Position(
-			offset.x +
-				(shape.pos?.x ?? (shape.start as Position | undefined)?.x ?? 0),
-			offset.y + (shape.pos?.y ?? (shape.start as Position | undefined)?.y ?? 0)
+			offset.x + (shape.pos.x ?? (shape.start as Position | undefined)?.x ?? 0),
+			offset.y + (shape.pos.y ?? (shape.start as Position | undefined)?.y ?? 0)
 		);
 		const visible = shape.visible && renderRestOfTree && true;
 
@@ -262,129 +262,116 @@ export class Sorse {
 				this.context.lineWidth = width;
 			}
 
-			switch (shape.type) {
-				case ShapeType.Rectangle: {
-					const width = shape.width as number;
-					const height = shape.height as number;
-					this.context.rect(
+			if (shape.type == ShapeType.Rectangle) {
+				const width = shape.width as number;
+				const height = shape.height as number;
+				this.context.fillRect(
+					drawPosition.x,
+					drawPosition.y,
+					width * this.gameScaleFactorWidth,
+					height * this.gameScaleFactorHeight
+				);
+				if (shape.border != undefined) {
+					this.context.strokeRect(
 						drawPosition.x,
 						drawPosition.y,
 						width * this.gameScaleFactorWidth,
 						height * this.gameScaleFactorHeight
 					);
-					this.context.fill();
-					if (shape.border != undefined) {
-						this.context.stroke();
-					}
-					break;
 				}
-
-				case ShapeType.Polygon: {
-					this.context.save();
-					this.context.moveTo(drawPosition.x, drawPosition.y);
-					this.context.beginPath();
-					for (const point of shape.points as Position[]) {
-						this.context.lineTo(
-							drawPosition.x + point.x,
-							drawPosition.y + point.y
-						);
-					}
-					this.context.moveTo(drawPosition.x, drawPosition.y);
-					this.context.closePath();
-					this.context.fill();
-					if (shape.border != undefined) {
-						this.context.stroke();
-					}
-					this.context.restore();
-					break;
+			} else if (shape.type == ShapeType.Polygon) {
+				this.context.save();
+				this.context.moveTo(drawPosition.x, drawPosition.y);
+				this.context.beginPath();
+				for (const point of shape.points as Position[]) {
+					this.context.lineTo(
+						drawPosition.x + point.x,
+						drawPosition.y + point.y
+					);
 				}
+				this.context.moveTo(drawPosition.x, drawPosition.y);
+				this.context.closePath();
+				this.context.fill();
+				if (shape.border != undefined) {
+					this.context.stroke();
+				}
+				this.context.restore();
+			} else if (shape.type == ShapeType.Circle) {
+				const radius = shape.radius as number;
+				this.context.arc(
+					drawPosition.x,
+					drawPosition.y,
+					radius,
+					0,
+					2 * Math.PI
+				);
+				this.context.fill();
+				if (shape.border != undefined) {
+					this.context.stroke();
+				}
+			} else if (shape.type == ShapeType.Line) {
+				const start = shape.start as Position;
+				const end = shape.end as Position;
+				this.context.moveTo(drawPosition.x + start.x, drawPosition.y + start.y);
+				this.context.beginPath();
+				this.context.lineTo(drawPosition.x + end.x, drawPosition.y + end.y);
+				this.context.closePath();
+				this.context.stroke();
+			} else if (shape.type == ShapeType.Text) {
+				const text = shape.text as string;
+				const font = shape.font as Font;
+				const align = shape.align as CanvasTextAlign | undefined;
+				const direction = shape.direction as CanvasDirection | undefined;
+				this.context.font = font.font;
+				this.context.textAlign = align ?? "left";
+				this.context.direction = direction ?? "ltr";
+				this.context.fillText(text, drawPosition.x, drawPosition.y);
+				if (shape.border != undefined) {
+					this.context.strokeText(text, drawPosition.x, drawPosition.y);
+				}
+			} else if (shape.type == ShapeType.Image) {
+				const image = shape.image as CanvasImageSource | string;
+				const width = shape.width as number | undefined;
+				const height = shape.height as number | undefined;
+				const imageSource =
+					typeof image == "string"
+						? ((await new Promise((resolve, reject) => {
+								if (document.getElementById(image) != null) {
+									resolve(document.getElementById(image) as HTMLImageElement);
+								} else {
+									const img = document.createElement("img");
+									img.onload = () => {
+										document.getElementById("sorse-cache")!.appendChild(img);
+										resolve(img);
+									};
+									img.onerror = () =>
+										reject(new Error("Failed to load image " + image));
+									img.id = image;
+									img.src = image;
+								}
+						  })) as HTMLImageElement)
+						: image;
 
-				case ShapeType.Circle: {
-					const radius = shape.radius as number;
-					this.context.arc(
+				if (width != undefined && height != undefined) {
+					this.context.drawImage(
+						imageSource,
 						drawPosition.x,
 						drawPosition.y,
-						radius,
-						0,
-						2 * Math.PI
+						width * this.gameScaleFactorWidth,
+						height * this.gameScaleFactorHeight
 					);
-					this.context.fill();
-					if (shape.border != undefined) {
-						this.context.stroke();
-					}
-					break;
-				}
-
-				case ShapeType.Line: {
-					const start = shape.start as Position;
-					const end = shape.end as Position;
-					this.context.moveTo(
-						drawPosition.x + start.x,
-						drawPosition.y + start.y
-					);
-					this.context.beginPath();
-					this.context.lineTo(drawPosition.x + end.x, drawPosition.y + end.y);
-					this.context.closePath();
-					this.context.stroke();
-					break;
-				}
-
-				case ShapeType.Text: {
-					const text = shape.text as string;
-					const font = shape.font as Font;
-					const align = shape.align as CanvasTextAlign | undefined;
-					const direction = shape.direction as CanvasDirection | undefined;
-					this.context.font = font.font;
-					this.context.textAlign = align ?? "left";
-					this.context.direction = direction ?? "ltr";
-					this.context.fillText(text, drawPosition.x, drawPosition.y);
-					if (shape.border != undefined) {
-						this.context.strokeText(text, drawPosition.x, drawPosition.y);
-					}
-					break;
-				}
-
-				case ShapeType.Image: {
-					const image = shape.image as CanvasImageSource | string;
-					const width = shape.width as number | undefined;
-					const height = shape.height as number | undefined;
-					const imageSource =
-						typeof image == "string"
-							? ((await new Promise((resolve, reject) => {
-									if (document.getElementById(image) != null) {
-										resolve(document.getElementById(image) as HTMLImageElement);
-									} else {
-										const img = document.createElement("img");
-										img.onload = () => {
-											document.getElementById("sorse-cache")!.appendChild(img);
-											resolve(img);
-										};
-										img.onerror = () =>
-											reject(new Error("Failed to load image " + image));
-										img.id = image;
-										img.src = image;
-									}
-							  })) as HTMLImageElement)
-							: image;
-
-					if (width != undefined && height != undefined) {
-						this.context.drawImage(
-							imageSource,
-							drawPosition.x,
-							drawPosition.y,
-							width * this.gameScaleFactorWidth,
-							height * this.gameScaleFactorHeight
-						);
-					} else {
-						this.context.drawImage(imageSource, drawPosition.x, drawPosition.y);
-					}
-					break;
+				} else {
+					this.context.drawImage(imageSource, drawPosition.x, drawPosition.y);
 				}
 			}
 		}
 
+		this.context.fillStyle = "black";
+		this.context.strokeStyle = "black";
+		this.context.lineWidth = 1;
+
 		for (const child of shape.children ?? []) {
-			await this.renderFromJSON(child, offset, visible);
+			await this.renderFromJSON(child, drawPosition, visible);
 		}
 	}
 }
