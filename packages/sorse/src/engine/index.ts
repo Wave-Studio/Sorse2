@@ -74,7 +74,7 @@ export class Sorse {
 		];
 	}
 
-	public static useEffect(callback: () => void, dependencies: unknown[]) {
+	public static useEffect(callback: () => void, dependencies: unknown[] = []) {
 		const [deps, setDeps] = this.useState<unknown[] | null>(null);
 
 		// Yes, there are easier ways to do this
