@@ -6,11 +6,13 @@
 
 import {
 	type InitOptions,
-	Position,
 	type ShapeReturn,
-	ShapeType,
 	type Font,
+	
+	Position,
+	ShapeType,
 	Container,
+	ClickType,
 } from "../index";
 
 export class Sorse {
@@ -22,6 +24,15 @@ export class Sorse {
 	private static opts: InitOptions;
 	private static width: number;
 	private static height: number;
+	private static renderedFrame: number = 0;
+	private static lastRender: number = 0;
+	private static hookData: unknown[] = [];
+	private static hookIndex = -1;
+	private static mouseX: number = 0;
+	private static mouseY: number = 0;
+	private static clicks: { pos: Position; type: ClickType }[] = [];
+	private static continueRender = true;
+	private static pressedKeys: string[] = [];
 
 	static get scaleFactorHeight() {
 		return this.gameScaleFactorHeight;
@@ -49,20 +60,147 @@ export class Sorse {
 
 	// None of this shit makes any sense - Blocks
 
+	// Hooks
+	public static useState<T>(initialState: T): [T, (newState: T) => void] {
+		this.hookIndex++;
+		// Freeze number
+		const hookNumber = parseInt(`${this.hookIndex}`);
+		this.hookData[hookNumber] = this.hookData[hookNumber] ?? initialState;
+		return [
+			this.hookData[hookNumber] as T,
+			(newState: T) => {
+				this.hookData[hookNumber] = newState;
+			},
+		];
+	}
+
+	public static useEffect(callback: () => void, dependencies: unknown[]) {
+		const [deps, setDeps] = this.useState<unknown[] | null>(null);
+
+		// Yes, there are easier ways to do this
+		// Will I use them? No.
+
+		if (deps == null) {
+			setDeps(dependencies);
+			callback();
+		} else {
+			if (deps.length != dependencies.length) {
+				setDeps(dependencies);
+				callback();
+			} else {
+				for (let i = 0; i < deps.length; i++) {
+					if (deps[i] != dependencies[i]) {
+						setDeps(dependencies);
+						callback();
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	public static useClickedPositions() {
+		return this.clicks;
+	}
+
+	public static useMousePosition() {
+		return new Position(this.mouseX, this.mouseY);
+	}
+
+	public static usePressedKeys() {
+		return this.pressedKeys;
+	}
+
+	public static useAudio(src: string) {
+		const [audioPlayer] = this.useState<HTMLAudioElement>(
+			(() => {
+				const audioPlayer = document.createElement("audio");
+				audioPlayer.src = src;
+				document.getElementById("sorse-cache")!.appendChild(audioPlayer);
+				return audioPlayer;
+			})()
+		);
+
+		return {
+			play: () => {
+				audioPlayer.currentTime = 0;
+				audioPlayer.play();
+			},
+
+			playAt: (time: number) => {
+				audioPlayer.currentTime = time;
+				audioPlayer.play();
+			},
+
+			resume: () => {
+				audioPlayer.play();
+			},
+
+			pause: () => {
+				audioPlayer.pause();
+			},
+
+			stop: () => {
+				audioPlayer.pause();
+				audioPlayer.currentTime = 0;
+			},
+
+			setVolume: (volume: number) => {
+				audioPlayer.volume = volume;
+			},
+
+			getVolume: () => {
+				return audioPlayer.volume;
+			},
+
+			getPosition: () => {
+				return audioPlayer.currentTime;
+			},
+
+			getDuration: () => {
+				return audioPlayer.duration;
+			},
+
+			isPlaying: () => {
+				return !audioPlayer.paused;
+			},
+
+			isEnded: () => {
+				return audioPlayer.ended;
+			},
+
+			setLoop: (loop: boolean) => {
+				audioPlayer.loop = loop;
+			},
+
+			getLoop: () => {
+				return audioPlayer.loop;
+			},
+		};
+	}
+
 	private static startRenderLoop() {
 		if (!this.isPastSplash) return;
 		const frameLoop = async () => {
-			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			await this.render();
-			//requestAnimationFrame(frameLoop);
+			if (this.continueRender) {
+				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				await this.render();
+				requestAnimationFrame(frameLoop);
+			}
 		};
 
 		requestAnimationFrame(frameLoop);
 	}
 
 	private static async render() {
-		const res = this.opts.component();
-		console.log(JSON.stringify(res));
+		this.hookIndex = -1;
+		const res = this.opts.component(
+			Date.now() - this.lastRender,
+			this.renderedFrame
+		);
+		this.clicks = [];
+		this.renderedFrame++;
+		this.lastRender = Date.now();
 		await this.renderFromJSON(res);
 	}
 
@@ -105,6 +243,89 @@ export class Sorse {
 
 				const postSplash = () => {
 					this.isPastSplash = true;
+
+					// Event listeners
+
+					const updateValues = ({ pageX, pageY }: MouseEvent) => {
+						this.mouseX = pageX - this.canvas.offsetLeft;
+						this.mouseY = pageY - this.canvas.offsetTop;
+					};
+
+					const convertKey = (key: string) => {
+						return key == " " ? "SPACE" : key.toUpperCase();
+					};
+
+					this.canvas.addEventListener("mousemove", updateValues);
+					this.canvas.addEventListener("mouseenter", updateValues);
+					this.canvas.addEventListener("mouseleave", updateValues);
+					this.canvas.addEventListener("click", (e) => {
+						let key = e.button ?? e.which;
+
+						// Legacy compatibility
+						if (e.button != undefined) {
+							key++;
+						}
+
+						const { x, y } = {
+							x: e.clientX - this.canvas.getBoundingClientRect().left,
+							y: e.clientY - this.canvas.getBoundingClientRect().top,
+						};
+						this.clicks.push({
+							pos: new Position(x, y),
+							type:
+								{
+									0: ClickType.Unknown,
+									1: ClickType.Left,
+									2: ClickType.Middle,
+									3: ClickType.Right,
+								}[(key ?? 0) as 0 | 1 | 2 | 3] ?? ClickType.Unknown,
+						});
+					});
+
+					window.addEventListener("contextmenu", (e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						return false;
+					});
+
+					// Disable media controls
+					navigator.mediaSession.metadata = new MediaMetadata({
+						title: this.opts.name,
+						artist:
+							typeof this.opts.author === "string"
+								? this.opts.author
+								: this.opts.author.join(", "),
+						album: "Sorse Game",
+						artwork: this.opts.mediaControlArtwork ?? [],
+					});
+
+					for (const action of [
+						"play",
+						"pause",
+						"stop",
+						"seekbackward",
+						"seekforward",
+						"seekto",
+						"previoustrack",
+						"nexttrack",
+					] as MediaSessionAction[]) {
+						navigator.mediaSession.setActionHandler(action, (e) => {});
+					}
+
+					window.addEventListener("keyup", (e) => {
+						const key = convertKey(e.key);
+						if (!this.pressedKeys.includes(key)) {
+							this.pressedKeys.push(key);
+						}
+					});
+
+					window.addEventListener("keydown", (e) => {
+						const key = convertKey(e.key);
+						this.pressedKeys = this.pressedKeys.filter((k) => k != key);
+					});
+
+					// TODO: Error handler
+
 					this.startRenderLoop();
 				};
 

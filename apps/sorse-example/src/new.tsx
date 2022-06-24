@@ -1,12 +1,9 @@
 import {
-	Circle,
-	Line,
 	Polygon,
 	Position,
 	Rectangle,
 	Sorse,
 	Square,
-	Text,
 } from "sorse";
 
 Sorse.init({

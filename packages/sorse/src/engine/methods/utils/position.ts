@@ -14,4 +14,8 @@ export class Position {
 		this.x = x * Sorse.scaleFactorWidth;
 		this.y = y * Sorse.scaleFactorHeight;
 	}
+
+	public array(): [number, number] {
+		return [this.x, this.y];
+	}
 }

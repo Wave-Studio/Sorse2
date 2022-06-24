@@ -11,7 +11,7 @@ export interface InitOptions {
 	author: string | string[];
 	version: string | number;
 	description?: string;
-	component: () => ShapeReturn;
+	component: (frameDelta: number, frameCount: number) => ShapeReturn;
 	canvas: {
 		nativeSize: {
 			width: number;
