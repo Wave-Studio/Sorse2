@@ -5,4 +5,5 @@
  */
 
 export * from "./utils/index";
-export * from "./jsx";
+export * from "./jsx/index";
+export * from "./hooks/index";

@@ -1,10 +1,4 @@
-import {
-	Polygon,
-	Position,
-	Rectangle,
-	Sorse,
-	Square,
-} from "sorse";
+import { Polygon, Position, Rectangle, Sorse, Square } from "sorse";
 
 Sorse.init({
 	name: "beans",
