@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { useState, useEffect } from "../../../index";
+import { useState } from "../../../index";
 
 /**
  * Execute asyncronous code via a hook and return the result

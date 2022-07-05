@@ -5,8 +5,8 @@
  */
 
 import {
-	type ShapeReturn,
 	type ContainerProps,
+	type ShapeReturn,
 	ShapeType,
 } from "../../../index";
 

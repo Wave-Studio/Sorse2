@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { type SquareProps, type ShapeReturn, ShapeType } from "../../../index";
+import { type ShapeReturn, ShapeType, type SquareProps } from "../../../index";
 
 export const Square = ({
 	children,

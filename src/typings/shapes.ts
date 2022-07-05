@@ -4,7 +4,7 @@
  * Developed by Wave-studio
  */
 
-import { Position, Font } from "../index";
+import { Font, Position } from "../index";
 
 export interface ShapeProps {
 	pos?: Position;

@@ -1,15 +1,7 @@
 {
 	"lint": {
 		"files": {
-			"exclude": [
-				"node_modules",
-				// Wildcards don't seem to work
-				"apps/docs/node_modules",
-				"apps/docs/dist",
-				"apps/sorse-example/node_modules",
-				"apps/sorse-example/dist",
-				"packages/config/node_modules"
-			]
+			"exclude": ["node_modules"]
 		},
 		"rules": {
 			// Doesn't work for some reason
@@ -18,5 +10,10 @@
 	},
 	"compilerOptions": {
 		"lib": ["deno.window", "ESNext", "DOM"]
+	},
+	"tasks": {
+		// Prettier has nicer formatting than deno
+		"fmt": "npx prettier --write .",
+		"lint": "deno lint --config=deno.jsonc"
 	}
 }

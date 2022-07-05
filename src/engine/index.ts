@@ -5,13 +5,13 @@
  */
 
 import {
-	type InitOptions,
-	type ShapeReturn,
-	type Font,
-	Position,
-	ShapeType,
-	Container,
 	ClickType,
+	Container,
+	type Font,
+	type InitOptions,
+	Position,
+	type ShapeReturn,
+	ShapeType,
 } from "../index";
 
 import { HookData } from "./methods/hooks/lib";
@@ -54,7 +54,9 @@ export class Sorse {
 	// None of this shit makes any sense - Blocks
 
 	private static startRenderLoop() {
-		if (!this.isPastSplash) return;
+		if (!this.isPastSplash) {
+			return;
+		}
 		const frameLoop = async () => {
 			if (this.continueRender) {
 				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -163,7 +165,7 @@ export class Sorse {
 					});
 
 					// @ts-expect-error Disable media controls
-					navigator.mediaSession.metadata = {}
+					navigator.mediaSession.metadata = {};
 
 					for (const action of [
 						"play",
@@ -187,7 +189,9 @@ export class Sorse {
 
 					addEventListener("keydown", (e) => {
 						const key = convertKey(e.key);
-						HookData.pressedKeys = HookData.pressedKeys.filter((k: string) => k != key);
+						HookData.pressedKeys = HookData.pressedKeys.filter(
+							(k: string) => k != key
+						);
 					});
 
 					// TODO: Error handler

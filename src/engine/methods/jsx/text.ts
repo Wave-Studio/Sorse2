@@ -5,10 +5,10 @@
  */
 
 import {
-	type ShapeReturn,
-	type TextProps,
-	ShapeType,
 	Font,
+	type ShapeReturn,
+	ShapeType,
+	type TextProps,
 } from "../../../index";
 
 export const Text = ({

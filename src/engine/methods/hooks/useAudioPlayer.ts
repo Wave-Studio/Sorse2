@@ -17,7 +17,7 @@ export const useAudioPlayer = (src: string) => {
 	);
 
 	// @ts-expect-error Disable media controls
-	navigator.mediaSession.metadata = {}
+	navigator.mediaSession.metadata = {};
 
 	return {
 		play: () => {
