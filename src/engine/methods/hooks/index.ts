@@ -13,3 +13,4 @@ export * from "./useAudioPlayer";
 export * from "./useLastRenderDelta";
 export * from "./useFrame";
 export * from "./useLoad";
+export * from "./useFPS";

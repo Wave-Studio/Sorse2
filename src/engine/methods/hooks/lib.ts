@@ -18,4 +18,5 @@ export class HookData {
 	public static pressedKeys: string[] = [];
 	public static renderedFrame = 0;
 	public static lastRender = 0;
+	public static last10FrameCounts: number[] = [];
 }
