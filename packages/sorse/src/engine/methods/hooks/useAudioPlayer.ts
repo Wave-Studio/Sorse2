@@ -6,73 +6,75 @@
 
 import { useState } from "../../../index";
 
-export const useAudioPlayer = (src: string) => {
-	const [audioPlayer] = useState<HTMLAudioElement>(
-		(() => {
-			const audioPlayer = document.createElement("audio");
-			audioPlayer.src = src;
-			document.getElementById("sorse-cache")!.appendChild(audioPlayer);
-			return audioPlayer;
-		})()
-	);
+export const useAudioPlayer = (src: string, volume = 100) => {
+  const [player, setPlayer] = useState<HTMLAudioElement | null>(null);
+  // @ts-expect-error Jankness:tm:
+  let audioPlayer: HTMLAudioElement = player;
 
-	// @ts-expect-error Disable media controls
-	navigator.mediaSession.metadata = {}
+  if (audioPlayer == null) {
+    const audio = document.createElement("audio");
+    audio.src = src;
+    document.getElementById("sorse-cache")!.appendChild(audio);
+    audio.volume = volume / 100;
+    setPlayer(audio);
+    audioPlayer = audio;
+  }
 
-	return {
-		play: () => {
-			audioPlayer.currentTime = 0;
-			audioPlayer.play();
-		},
+  return {
+    play: () => {
+      audioPlayer.currentTime = 0;
+      audioPlayer.play();
+      navigator.mediaSession.metadata = new MediaMetadata();
+    },
 
-		playAt: (time: number) => {
-			audioPlayer.currentTime = time;
-			audioPlayer.play();
-		},
+    playAt: (time: number) => {
+      audioPlayer.currentTime = time;
+      audioPlayer.play();
+    },
 
-		resume: () => {
-			audioPlayer.play();
-		},
+    resume: () => {
+      audioPlayer.play();
+    },
 
-		pause: () => {
-			audioPlayer.pause();
-		},
+    pause: () => {
+      audioPlayer.pause();
+    },
 
-		stop: () => {
-			audioPlayer.pause();
-			audioPlayer.currentTime = 0;
-		},
+    stop: () => {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+    },
 
-		setVolume: (volume: number) => {
-			audioPlayer.volume = volume;
-		},
+    setVolume: (volume: number) => {
+      audioPlayer.volume = volume / 100;
+    },
 
-		getVolume: () => {
-			return audioPlayer.volume;
-		},
+    getVolume: () => {
+      return audioPlayer.volume;
+    },
 
-		getPosition: () => {
-			return audioPlayer.currentTime;
-		},
+    getPosition: () => {
+      return audioPlayer.currentTime;
+    },
 
-		getDuration: () => {
-			return audioPlayer.duration;
-		},
+    getDuration: () => {
+      return audioPlayer.duration;
+    },
 
-		isPlaying: () => {
-			return !audioPlayer.paused;
-		},
+    isPlaying: () => {
+      return !audioPlayer.paused;
+    },
 
-		isEnded: () => {
-			return audioPlayer.ended;
-		},
+    isEnded: () => {
+      return audioPlayer.ended;
+    },
 
-		setLoop: (loop: boolean) => {
-			audioPlayer.loop = loop;
-		},
+    setLoop: (loop: boolean) => {
+      audioPlayer.loop = loop;
+    },
 
-		getLoop: () => {
-			return audioPlayer.loop;
-		},
-	};
+    isLooping: () => {
+      return audioPlayer.loop;
+    },
+  };
 };

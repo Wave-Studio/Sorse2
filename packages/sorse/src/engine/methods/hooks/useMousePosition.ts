@@ -8,5 +8,5 @@ import { Position } from "../../../index";
 import { HookData } from "./lib";
 
 export const useMousePosition = () => {
-	return new Position(HookData.mouseX, HookData.mouseY);
+	return new Position(HookData.mouseX ?? 0, HookData.mouseY ?? 0);
 };

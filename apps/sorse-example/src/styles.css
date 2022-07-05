@@ -1,12 +1,12 @@
-body,
-html,
-:root {
+@import url('https://fonts.googleapis.com/css2?family=Oswald&family=Poppins&display=swap');
+
+* {
 	margin: 0;
 	padding: 0;
 }
 
 body {
-	background: gray;
+	background: white;
 	min-height: 100vh;
 	display: flex;
 	align-items: center;
@@ -14,6 +14,6 @@ body {
 }
 
 canvas {
-	border: 2px solid black;
-	border-radius: 1rem;
+	border: 0px solid black;
+	border-radius: 0rem;
 }

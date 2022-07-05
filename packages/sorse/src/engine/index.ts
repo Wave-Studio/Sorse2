@@ -74,6 +74,7 @@ export class Sorse {
 		);
 		HookData.clicks = [];
 		HookData.renderedFrame++;
+		HookData.last10FrameCounts[0]++;
 		HookData.lastRender = Date.now();
 		await this.renderFromJSON(res);
 	}
@@ -162,8 +163,7 @@ export class Sorse {
 						return false;
 					});
 
-					// @ts-expect-error Disable media controls
-					navigator.mediaSession.metadata = {}
+					navigator.mediaSession.metadata = new MediaMetadata({});
 
 					for (const action of [
 						"play",
@@ -189,6 +189,15 @@ export class Sorse {
 						const key = convertKey(e.key);
 						HookData.pressedKeys = HookData.pressedKeys.filter((k: string) => k != key);
 					});
+
+					HookData.last10FrameCounts[0] = 0;
+
+					setInterval(() => {
+						HookData.last10FrameCounts.unshift(0);
+						if (HookData.last10FrameCounts.length > 10) {
+							HookData.last10FrameCounts.pop();
+						}
+					}, 1000);
 
 					// TODO: Error handler
 
@@ -288,10 +297,6 @@ export class Sorse {
 
 	public static createPattern(image: CanvasImageSource, repetition?: string) {
 		return this.context.createPattern(image, repetition ?? null);
-	}
-
-	public static async loadRemoteFont(name: string, remoteURL: string) {
-		await new FontFace(name, `url(${remoteURL})`).load();
 	}
 
 	// JSX aspect of Sorse

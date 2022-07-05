@@ -1,41 +1,53 @@
-import { Polygon, Position, Rectangle, Sorse, Square } from "sorse";
+import {
+  Sorse,
+  useAudioPlayer,
+  useEffect,
+  useMousePosition,
+  useState,
+} from "sorse";
+import Scene from "./scene";
+import "./styles.css";
+
+// new CollisionBox(new Box(new Position(0, 0), new Position(100, 100)))
 
 Sorse.init({
-	name: "beans",
-	canvas: {
-		nativeSize: {
-			width: 800,
-			height: 600,
-		},
-	},
-	author: "Wave",
-	version: "1",
-	// For some reason this just draws two red squares with a blue border, it's the right size though??????????
-	// confused unga bunga
-	component: () => {
-		return (
-			<>
-				<Rectangle width={800} height={600} color={"green"}>
-					<Square
-						sideLength={100}
-						color={"purple"}
-						border={{
-							width: 20,
-							color: "blue",
-						}}
-						pos={new Position(100, 100)}
-					>
-						<Polygon
-							color={"yellow"}
-							points={[
-								new Position(0, 0),
-								new Position(100, 0),
-								new Position(100, 100),
-							]}
-						/>
-					</Square>
-				</Rectangle>
-			</>
-		);
-	},
+  name: "beans",
+  canvas: {
+    nativeSize: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    },
+  },
+  author: "Wave",
+  version: "1",
+  component: () => {
+    const [started, setStarted] = useState(false);
+
+    const { x, y } = useMousePosition();
+
+    if (x >= 0 && x <= 100 && y >= 0 && y <= 100) {
+      setStarted(true);
+    } else {
+      setStarted(false);
+    }
+
+    const audio = useAudioPlayer("song-3.mp3", 25);
+
+    useEffect(() => {
+      // audio.play();
+      // setTimeout(() => {
+      //   audio.setLoop(true)
+      // }, 50);
+
+      // setTimeout(() => {
+      //   audio.pause();
+      // }, 10000);
+    }, []);
+
+    return (
+      <>
+        <Scene gameStarted={started} audioTime={audio.getPosition()} />
+      </>
+    );
+  },
 });
