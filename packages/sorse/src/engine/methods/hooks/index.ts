@@ -12,3 +12,4 @@ export * from "./usePressedKeys";
 export * from "./useAudioPlayer";
 export * from "./useLastRenderDelta";
 export * from "./useFrame";
+export * from "./useLoad";
