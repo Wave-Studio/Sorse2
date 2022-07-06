@@ -339,7 +339,7 @@ export class Sorse {
 		);
 		const visible = shape.visible && renderRestOfTree && true;
 
-		if (shape.type != ShapeType.Container) {
+		if (shape.type != ShapeType.Container && visible) {
 			this.context.fillStyle =
 				(shape.color as string | CanvasPattern | CanvasGradient | undefined) ??
 				"black";
@@ -457,7 +457,7 @@ export class Sorse {
 			}
 		}
 
-		if (shape.onClick != undefined) {
+		if (shape.onClick != undefined && visible) {
 			for (const click of HookData.clicks) {
 				if (shape.onClick.collisionBox.inCollision(click.pos)) {
 					shape.onClick.callback(click);
