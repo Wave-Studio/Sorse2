@@ -21,6 +21,7 @@ export const Text = ({
 	align,
 	border,
 	direction,
+	onClick
 }: TextProps): ShapeReturn => {
 	return {
 		type: ShapeType.Text,
@@ -33,5 +34,6 @@ export const Text = ({
 		border,
 		direction,
 		visible: visible ?? true,
+		onClick
 	};
 };

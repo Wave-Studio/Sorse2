@@ -4,13 +4,17 @@
  * Developed by Wave-studio
  */
 
-import { Font, Position } from "../index";
+import { type Font, type Position, type CollisionBox, type ClickType } from "../index";
 
 export interface ShapeProps {
 	pos?: Position;
 	/** DO NOT SET MANUALLY, THIS IS REPLACED BY SORSE */
 	children?: ShapeReturn[];
 	visible?: boolean;
+	onClick?: {
+		collisionBox: CollisionBox,
+		callback: () => void 
+	}
 }
 
 export interface ColoredShapeProps extends ShapeProps {
@@ -37,6 +41,10 @@ export interface ShapeReturn {
 	children: ShapeReturn[];
 	pos?: Position;
 	offset?: Position;
+	onClick?: {
+		collisionBox: CollisionBox,
+		callback: ({ pos, type }: { pos: Position, type: ClickType}) => void 
+	}
 	[key: string]: unknown;
 }
 
@@ -44,6 +52,10 @@ export interface ContainerProps {
 	children?: ShapeReturn[];
 	visible?: boolean;
 	offset?: Position;
+	onClick?: {
+		collisionBox: CollisionBox,
+		callback: () => void 
+	}
 }
 
 export interface SquareProps extends ColoredShapeProps {

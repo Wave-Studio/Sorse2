@@ -457,6 +457,14 @@ export class Sorse {
 			}
 		}
 
+		if (shape.onClick != undefined) {
+			for (const click of HookData.clicks) {
+				if (shape.onClick.collisionBox.inCollision(click.pos)) {
+					shape.onClick.callback(click);
+				}
+			}
+		}
+
 		this.context.fillStyle = "black";
 		this.context.strokeStyle = "black";
 		this.context.lineWidth = 1;

@@ -13,6 +13,7 @@ export const Circle = ({
 	radius,
 	border,
 	visible,
+	onClick
 }: CircleProps): ShapeReturn => {
 	return {
 		type: ShapeType.Circle,
@@ -22,5 +23,6 @@ export const Circle = ({
 		radius,
 		border,
 		visible: visible ?? true,
+		onClick
 	};
 };

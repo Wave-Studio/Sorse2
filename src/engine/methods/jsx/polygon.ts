@@ -13,6 +13,7 @@ export const Polygon = ({
 	points,
 	border,
 	visible,
+	onClick
 }: PolygonProps): ShapeReturn => {
 	return {
 		type: ShapeType.Polygon,
@@ -22,5 +23,6 @@ export const Polygon = ({
 		points,
 		border,
 		visible: visible ?? true,
+		onClick
 	};
 };

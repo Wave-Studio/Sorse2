@@ -14,6 +14,7 @@ export const Line = ({
 	start,
 	end,
 	visible,
+	onClick
 }: LineProps): ShapeReturn => {
 	return {
 		type: ShapeType.Line,
@@ -24,5 +25,6 @@ export const Line = ({
 		start,
 		end,
 		visible: visible ?? true,
+		onClick
 	};
 };
