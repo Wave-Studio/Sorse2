@@ -7,17 +7,21 @@
 import { useState } from "../../../index";
 
 export const useAudioPlayer = (src: string) => {
-	const [audioPlayer] = useState<HTMLAudioElement>(
-		(() => {
-			const audioPlayer = document.createElement("audio");
-			audioPlayer.src = src;
-			document.getElementById("sorse-cache")!.appendChild(audioPlayer);
-			return audioPlayer;
-		})()
+	const [player, setPlayer] = useState<HTMLAudioElement | null>(
+		null
 	);
+	// @ts-expect-error
+	let audioPlayer: HTMLAudioElement = player;
+	
+	if (audioPlayer == null) {
+		const audio = document.createElement("audio");
+		audio.src = src;
+		document.getElementById("sorse-cache")!.appendChild(audio);
+		setPlayer(audio);
+		audioPlayer = audio;
+	}
 
-	// @ts-expect-error Disable media controls
-	navigator.mediaSession.metadata = {};
+	navigator.mediaSession.metadata = new MediaMetadata();
 
 	return {
 		play: () => {

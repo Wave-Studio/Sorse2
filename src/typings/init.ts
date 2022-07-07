@@ -7,9 +7,9 @@
 import { type ShapeReturn } from "../index";
 
 export interface InitOptions {
-	name: string;
-	author: string | string[];
-	version: string | number;
+	name?: string;
+	author?: string | string[];
+	version?: string | number;
 	description?: string;
 	component: (frameDelta: number, frameCount: number) => ShapeReturn;
 	canvas: {
@@ -23,5 +23,4 @@ export interface InitOptions {
 			height: number;
 		};
 	};
-	mediaControlArtwork?: MediaImage[];
 }

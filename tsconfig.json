@@ -1,25 +1,22 @@
 {
 	"compilerOptions": {
 		"target": "ESNext",
-		"composite": false,
-		"declaration": true,
-		"declarationMap": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"inlineSources": false,
-		"isolatedModules": true,
-		"moduleResolution": "node",
-		"noUnusedLocals": false,
-		"noUnusedParameters": false,
-		"preserveWatchOutput": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"experimentalDecorators": true,
+		"useDefineForClassFields": true,
 		"module": "ESNext",
 		"lib": ["ESNext", "DOM"],
+		"moduleResolution": "Node",
+		"strict": true,
+		"sourceMap": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"noEmit": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"experimentalDecorators": true,
 		"jsx": "react",
 		"jsxFactory": "Sorse.h",
 		"jsxFragmentFactory": "Sorse.f"
 	},
-	"exclude": ["node_modules"]
+	"include": ["src"]
 }

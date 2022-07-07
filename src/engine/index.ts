@@ -164,8 +164,7 @@ export class Sorse {
 						return false;
 					});
 
-					// @ts-expect-error Disable media controls
-					navigator.mediaSession.metadata = {};
+					navigator.mediaSession.metadata = new MediaMetadata();
 
 					for (const action of [
 						"play",
