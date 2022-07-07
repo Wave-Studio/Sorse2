@@ -179,14 +179,14 @@ export class Sorse {
 						navigator.mediaSession.setActionHandler(action, () => {});
 					}
 
-					addEventListener("keyup", (e) => {
+					addEventListener("keydown", (e) => {
 						const key = convertKey(e.key);
 						if (!HookData.pressedKeys.includes(key)) {
 							HookData.pressedKeys.push(key);
 						}
 					});
 
-					addEventListener("keydown", (e) => {
+					addEventListener("keyup", (e) => {
 						const key = convertKey(e.key);
 						HookData.pressedKeys = HookData.pressedKeys.filter(
 							(k: string) => k != key
@@ -194,6 +194,22 @@ export class Sorse {
 					});
 
 					// TODO: Error handler
+					window.onerror = (
+						event: Event | string,
+						source?: string,
+						lineno?: number,
+						colno?: number,
+						error?: Error
+					) => {
+						this.continueRender = false;
+						console.error("Sorse error handler: An error has occured, below is a stack trace.");
+						console.error("Event:", event);
+						console.error("Source:", source);
+						console.error("Line:", lineno);
+						console.error("Column:", colno);
+						console.error("Error:", error);
+
+					};
 
 					this.startRenderLoop();
 				};
