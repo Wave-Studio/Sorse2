@@ -14,7 +14,7 @@ export const Container = ({
 	children,
 	offset,
 	visible,
-	onClick
+	onClick,
 }: ContainerProps): ShapeReturn => {
 	return {
 		type: ShapeType.Container,

@@ -12,7 +12,7 @@ import {
 } from "../../../index";
 
 export const Text = ({
-	pos,
+	position,
 	children,
 	color,
 	font,
@@ -21,19 +21,21 @@ export const Text = ({
 	align,
 	border,
 	direction,
-	onClick
+	onClick,
+	shadow
 }: TextProps): ShapeReturn => {
 	return {
 		type: ShapeType.Text,
 		children: children ?? [],
 		color,
-		pos,
+		pos: position,
 		font: font ?? new Font(),
 		text,
 		align,
 		border,
 		direction,
 		visible: visible ?? true,
-		onClick
+		onClick,
+		shadow
 	};
 };

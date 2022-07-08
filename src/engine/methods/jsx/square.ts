@@ -9,21 +9,23 @@ import { type ShapeReturn, ShapeType, type SquareProps } from "../../../index";
 export const Square = ({
 	children,
 	color,
-	pos,
+	position,
 	sideLength,
 	border,
 	visible,
-	onClick
+	onClick,
+	shadow
 }: SquareProps): ShapeReturn => {
 	return {
 		type: ShapeType.Rectangle,
 		children: children ?? [],
 		color,
-		pos,
+		pos: position,
 		width: sideLength,
 		height: sideLength,
 		border,
 		visible: visible ?? true,
-		onClick
+		onClick,
+		shadow
 	};
 };

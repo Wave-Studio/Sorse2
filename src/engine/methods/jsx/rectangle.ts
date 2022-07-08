@@ -13,22 +13,24 @@ import {
 export const Rectangle = ({
 	children,
 	color,
-	pos,
+	position,
 	width,
 	height,
 	border,
 	visible,
-	onClick
+	onClick,
+	shadow
 }: RectangleProps): ShapeReturn => {
 	return {
 		type: ShapeType.Rectangle,
 		children: children ?? [],
 		color,
-		pos,
+		pos: position,
 		width,
 		height,
 		border,
 		visible: visible ?? true,
-		onClick
+		onClick,
+		shadow
 	};
 };

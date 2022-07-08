@@ -9,20 +9,22 @@ import { type CircleProps, type ShapeReturn, ShapeType } from "../../../index";
 export const Circle = ({
 	children,
 	color,
-	pos,
+	position,
 	radius,
 	border,
 	visible,
-	onClick
+	onClick,
+	shadow
 }: CircleProps): ShapeReturn => {
 	return {
 		type: ShapeType.Circle,
 		children: children ?? [],
 		color,
-		pos,
+		pos: position,
 		radius,
 		border,
 		visible: visible ?? true,
-		onClick
+		onClick,
+		shadow
 	};
 };

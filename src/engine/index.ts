@@ -202,13 +202,14 @@ export class Sorse {
 						error?: Error
 					) => {
 						this.continueRender = false;
-						console.error("Sorse error handler: An error has occured, below is a stack trace.");
+						console.error(
+							"Sorse error handler: An error has occured, below is a stack trace."
+						);
 						console.error("Event:", event);
 						console.error("Source:", source);
 						console.error("Line:", lineno);
 						console.error("Column:", colno);
 						console.error("Error:", error);
-
 					};
 
 					this.startRenderLoop();
@@ -342,6 +343,11 @@ export class Sorse {
 		this.context.fillStyle = "black";
 		this.context.strokeStyle = "black";
 		this.context.lineWidth = 1;
+		this.context.shadowColor = "black";
+		this.context.shadowBlur = 0;
+		this.context.shadowOffsetX = 0;
+		this.context.shadowOffsetY = 0;
+		if (typeof shape == "string") return;
 		shape.pos = shape.pos ?? new Position(0, 0);
 
 		const offset = new Position(
@@ -366,6 +372,15 @@ export class Sorse {
 				};
 				this.context.strokeStyle = color;
 				this.context.lineWidth = width;
+			}
+
+			if (shape.shadow != undefined) {
+				this.context.shadowColor = shape.shadow.color ?? "black";
+				this.context.shadowBlur = shape.shadow.blur ?? 0;
+				const { x, y } = shape.shadow.offset ?? new Position(0, 0);
+
+				this.context.shadowOffsetX = x;
+				this.context.shadowOffsetY = y;
 			}
 
 			if (shape.type == ShapeType.Rectangle) {
@@ -436,38 +451,69 @@ export class Sorse {
 					this.context.strokeText(text, drawPosition.x, drawPosition.y);
 				}
 			} else if (shape.type == ShapeType.Image) {
-				const image = shape.image as CanvasImageSource | string;
+				const image = shape.src as CanvasImageSource | string;
 				const width = shape.width as number | undefined;
 				const height = shape.height as number | undefined;
-				const imageSource =
-					typeof image == "string"
-						? ((await new Promise((resolve, reject) => {
-								if (document.getElementById(image) != null) {
-									resolve(document.getElementById(image) as HTMLImageElement);
-								} else {
-									const img = document.createElement("img");
-									img.onload = () => {
-										document.getElementById("sorse-cache")!.appendChild(img);
-										resolve(img);
-									};
-									img.onerror = () =>
-										reject(new Error("Failed to load image " + image));
-									img.id = image;
-									img.src = image;
-								}
-						  })) as HTMLImageElement)
-						: image;
+				let imageSource: CanvasImageSource;
+
+				if (typeof image == "string") {
+					const promise = () =>
+						new Promise((resolve, reject) => {
+							if (document.getElementById(image) != null) {
+								resolve(document.getElementById(image) as HTMLImageElement);
+							} else {
+								const img = document.createElement("img");
+								img.onload = () => {
+									document.getElementById("sorse-cache")!.appendChild(img);
+									imageSource = img;
+									resolve(img);
+								};
+								img.onerror = () =>
+									reject(new Error("Failed to load image " + image));
+								img.id = image;
+								img.src = image;
+							}
+						});
+
+					imageSource = (await promise()) as HTMLImageElement;
+				} else {
+					imageSource = image;
+				}
 
 				if (width != undefined && height != undefined) {
 					this.context.drawImage(
-						imageSource,
+						imageSource!,
 						drawPosition.x,
 						drawPosition.y,
 						width * this.gameScaleFactorWidth,
 						height * this.gameScaleFactorHeight
 					);
 				} else {
-					this.context.drawImage(imageSource, drawPosition.x, drawPosition.y);
+					if (width != undefined && height == undefined) {
+						this.context.drawImage(
+							imageSource!,
+							drawPosition.x,
+							drawPosition.y,
+							width * this.gameScaleFactorWidth,
+							(imageSource!.height as number) * this.gameScaleFactorHeight
+						);
+					} else {
+						if (width == undefined && height != undefined) {
+							this.context.drawImage(
+								imageSource!,
+								drawPosition.x,
+								drawPosition.y,
+								(imageSource!.height as number) * this.gameScaleFactorHeight,
+								height * this.gameScaleFactorWidth
+							);
+						} else {
+							this.context.drawImage(
+								imageSource!,
+								drawPosition.x,
+								drawPosition.y
+							);
+						}
+					}
 				}
 			}
 		}

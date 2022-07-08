@@ -7,7 +7,7 @@
 import { type Font, type Position, type CollisionBox, type ClickType } from "../index";
 
 export interface ShapeProps {
-	pos?: Position;
+	position?: Position;
 	/** DO NOT SET MANUALLY, THIS IS REPLACED BY SORSE */
 	children?: ShapeReturn[];
 	visible?: boolean;
@@ -15,10 +15,15 @@ export interface ShapeProps {
 		collisionBox: CollisionBox,
 		callback: () => void 
 	}
+	shadow?: {
+		color?: string;
+		offset?: Position;
+		blur?: number;
+	}
 }
 
 export interface ColoredShapeProps extends ShapeProps {
-	color: string | CanvasPattern | CanvasGradient;
+	color?: string | CanvasPattern | CanvasGradient;
 	border?: {
 		width: number;
 		color: string | CanvasPattern | CanvasGradient;
@@ -44,6 +49,11 @@ export interface ShapeReturn {
 	onClick?: {
 		collisionBox: CollisionBox,
 		callback: ({ pos, type }: { pos: Position, type: ClickType}) => void 
+	}
+	shadow?: {
+		color?: string;
+		offset?: Position;
+		blur?: number;
 	}
 	[key: string]: unknown;
 }

@@ -9,22 +9,24 @@ import { type LineProps, type ShapeReturn, ShapeType } from "../../../index";
 export const Line = ({
 	children,
 	color,
-	pos,
+	position,
 	width,
 	start,
 	end,
 	visible,
-	onClick
+	onClick,
+	shadow
 }: LineProps): ShapeReturn => {
 	return {
 		type: ShapeType.Line,
 		children: children ?? [],
 		color,
-		pos,
+		pos: position,
 		width,
 		start,
 		end,
 		visible: visible ?? true,
-		onClick
+		onClick,
+		shadow
 	};
 };

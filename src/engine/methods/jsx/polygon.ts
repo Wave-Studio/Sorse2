@@ -9,20 +9,22 @@ import { type PolygonProps, type ShapeReturn, ShapeType } from "../../../index";
 export const Polygon = ({
 	children,
 	color,
-	pos,
+	position,
 	points,
 	border,
 	visible,
-	onClick
+	onClick,
+	shadow
 }: PolygonProps): ShapeReturn => {
 	return {
 		type: ShapeType.Polygon,
 		children: children ?? [],
 		color,
-		pos,
+		pos: position,
 		points,
 		border,
 		visible: visible ?? true,
-		onClick
+		onClick,
+		shadow
 	};
 };

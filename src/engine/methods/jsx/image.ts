@@ -8,21 +8,23 @@ import { type ImageProps, type ShapeReturn, ShapeType } from "../../../index";
 
 export const Image = ({
 	children,
-	pos,
+	position,
 	width,
 	height,
 	src,
 	visible,
-	onClick
+	onClick,
+	shadow
 }: ImageProps): ShapeReturn => {
 	return {
 		type: ShapeType.Image,
 		children: children ?? [],
 		src,
-		pos,
+		pos: position,
 		width,
 		height,
 		visible: visible ?? true,
-		onClick
+		onClick,
+		shadow
 	};
 };
