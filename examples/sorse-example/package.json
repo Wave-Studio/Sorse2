@@ -7,9 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-	  "sorse": "../../"
-  },
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^4.5.4",
     "vite": "^2.9.9"

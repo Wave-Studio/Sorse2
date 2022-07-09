@@ -4,7 +4,35 @@
  * Developed by Wave-studio
  */
 
-import { type Font, type Position, type CollisionBox, type ClickType } from "../index";
+import {
+	type Font,
+	type Position,
+	type CollisionBox,
+	type ClickType,
+} from "../index";
+
+export enum AlignTypeX {
+	Left = "left",
+	Right = "right",
+	Center = "center",
+}
+
+export enum AlignTypeY {
+	Top = "top",
+	Bottom = "bottom",
+	Center = "center",
+}
+
+export const AlignType = {
+	TopLeft: { x: AlignTypeX.Left, y: AlignTypeY.Top },
+	BottomRight: { x: AlignTypeX.Right, y: AlignTypeY.Bottom },
+	Center: { x: AlignTypeX.Center, y: AlignTypeY.Center },
+}
+
+interface AlignmentProps {
+	x?: AlignTypeX;
+	y?: AlignTypeY;
+};
 
 export interface ShapeProps {
 	position?: Position;
@@ -12,14 +40,15 @@ export interface ShapeProps {
 	children?: ShapeReturn[];
 	visible?: boolean;
 	onClick?: {
-		collisionBox: CollisionBox,
-		callback: () => void 
-	}
+		collisionBox: CollisionBox;
+		callback: () => void;
+	};
 	shadow?: {
 		color?: string;
 		offset?: Position;
 		blur?: number;
-	}
+	};
+	align?: AlignmentProps;
 }
 
 export interface ColoredShapeProps extends ShapeProps {
@@ -47,14 +76,15 @@ export interface ShapeReturn {
 	pos?: Position;
 	offset?: Position;
 	onClick?: {
-		collisionBox: CollisionBox,
-		callback: ({ pos, type }: { pos: Position, type: ClickType}) => void 
-	}
+		collisionBox: CollisionBox;
+		callback: ({ pos, type }: { pos: Position; type: ClickType }) => void;
+	};
 	shadow?: {
 		color?: string;
 		offset?: Position;
 		blur?: number;
-	}
+	};
+	align?: AlignmentProps;
 	[key: string]: unknown;
 }
 
@@ -63,9 +93,9 @@ export interface ContainerProps {
 	visible?: boolean;
 	offset?: Position;
 	onClick?: {
-		collisionBox: CollisionBox,
-		callback: () => void 
-	}
+		collisionBox: CollisionBox;
+		callback: () => void;
+	};
 }
 
 export interface SquareProps extends ColoredShapeProps {
@@ -95,8 +125,6 @@ export interface CircleProps extends ColoredShapeProps {
 export interface TextProps extends ColoredShapeProps {
 	font?: Font;
 	text: string;
-	align?: "center" | "end" | "left" | "right" | "start";
-	direction?: "inherit" | "ltr" | "rtl";
 }
 
 export interface ImageProps extends ShapeProps {

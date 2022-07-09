@@ -14,7 +14,8 @@ export const Square = ({
 	border,
 	visible,
 	onClick,
-	shadow
+	shadow,
+	align
 }: SquareProps): ShapeReturn => {
 	return {
 		type: ShapeType.Rectangle,
@@ -26,6 +27,7 @@ export const Square = ({
 		border,
 		visible: visible ?? true,
 		onClick,
-		shadow
+		shadow,
+		align
 	};
 };

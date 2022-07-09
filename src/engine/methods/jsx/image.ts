@@ -14,7 +14,8 @@ export const Image = ({
 	src,
 	visible,
 	onClick,
-	shadow
+	shadow,
+	align
 }: ImageProps): ShapeReturn => {
 	return {
 		type: ShapeType.Image,
@@ -25,6 +26,7 @@ export const Image = ({
 		height,
 		visible: visible ?? true,
 		onClick,
-		shadow
+		shadow,
+		align
 	};
 };

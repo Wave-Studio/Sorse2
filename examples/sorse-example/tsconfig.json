@@ -16,7 +16,10 @@
 		"noImplicitReturns": true,
 		"experimentalDecorators": true,
 		"jsxFactory": "Sorse.h",
-		"jsxFragmentFactory": "Sorse.f"
+		"jsxFragmentFactory": "Sorse.f",
+		"paths": {
+			"sorse": ["../../src/index.ts"],
+		}
 	},
 	"include": ["src"]
 }

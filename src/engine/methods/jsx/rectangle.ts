@@ -19,7 +19,8 @@ export const Rectangle = ({
 	border,
 	visible,
 	onClick,
-	shadow
+	shadow,
+	align
 }: RectangleProps): ShapeReturn => {
 	return {
 		type: ShapeType.Rectangle,
@@ -31,6 +32,7 @@ export const Rectangle = ({
 		border,
 		visible: visible ?? true,
 		onClick,
-		shadow
+		shadow,
+		align
 	};
 };

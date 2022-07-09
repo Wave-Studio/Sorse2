@@ -7,18 +7,26 @@
 import { Sorse } from "../../../index";
 
 export class Font {
-	private fontSize: number;
+	private _fontSize: number;
+
+	get fontSize() {
+		return this._fontSize;
+	}
+
+	set fontSize(fontSize: number) {
+		this._fontSize = fontSize * Sorse.scaleFactorHeight;
+	}
 
 	constructor(
-		private fontName = "Arial",
+		public fontName = "Arial",
 		fontSize = 12,
-		private modifiers: string[] = [""]
+		public modifiers: string[] = [""]
 	) {
-		this.fontSize = fontSize * Sorse.scaleFactorHeight;
+		this._fontSize = fontSize * Sorse.scaleFactorHeight;
 	}
 
 	public get font() {
-		return `${this.modifiers.join(" ")} ${this.fontSize}px ${
+		return `${this.modifiers.join(" ")} ${this._fontSize}px ${
 			this.fontName
 		}`.trim();
 	}
