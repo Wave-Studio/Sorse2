@@ -509,30 +509,30 @@ export class Sorse {
 				if (shape.align != undefined) {
 					switch (shape.align.x) {
 						case AlignTypeX.Left: {
-							break;
-						}
-						case AlignTypeX.Center: {
 							drawPosition.x -= width / 2;
 							break;
 						}
+						case AlignTypeX.Center: {
+							break;
+						}
 						case AlignTypeX.Right: {
-							drawPosition.x -= width;
+							drawPosition.x += width / 2;
 							break;
 						}
 					}
 
 					switch (shape.align.y) {
 						case AlignTypeY.Top: {
+							drawPosition.y -= height / 2;
 							break;
 						}
 
 						case AlignTypeY.Center: {
-							drawPosition.y += height / 2;
 							break;
 						}
 
 						case AlignTypeY.Bottom: {
-							drawPosition.y += height;
+							drawPosition.y += height / 2;
 							break;
 						}
 					}
