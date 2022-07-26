@@ -5,17 +5,21 @@
  */
 
 import {
-	type Font,
 	type InitOptions,
 	type ShapeReturn,
 	ClickType,
 	Container,
 	Position,
 	ShapeType,
-	AlignTypeX,
-	AlignTypeY,
 } from "../index";
-
+import {
+	circleRender,
+	imageRender,
+	lineRender,
+	polygonRender,
+	rectRender,
+	textRender,
+} from "./render/index";
 import { HookData } from "./methods/hooks/lib";
 
 export class Sorse {
@@ -339,6 +343,7 @@ export class Sorse {
 	// Render engine
 	private static async renderFromJSON(
 		shape: ShapeReturn,
+		rotation = 0,
 		positionOffset: Position = new Position(0, 0),
 		renderRestOfTree = true
 	) {
@@ -351,6 +356,8 @@ export class Sorse {
 		this.context.shadowBlur = 0;
 		this.context.shadowOffsetX = 0;
 		this.context.shadowOffsetY = 0;
+		rotation = rotation += shape.rotation ?? 0;
+		this.context.rotate(rotation);
 		shape.pos = shape.pos ?? new Position(0, 0);
 		const offset = new Position(
 			positionOffset.x + (shape.offset?.x ?? 0),
@@ -386,308 +393,29 @@ export class Sorse {
 				this.context.shadowOffsetY = y;
 			}
 
-			if (shape.type == ShapeType.Rectangle) {
-				const width = shape.width as number;
-				const height = shape.height as number;
+			const shapeRenderMethods: Record<
+				ShapeType,
+				| ((
+						shape: ShapeReturn,
+						drawPosition: Position,
+						context: CanvasRenderingContext2D
+				  ) => Promise<void>)
+				| ((
+						shape: ShapeReturn,
+						drawPosition: Position,
+						context: CanvasRenderingContext2D
+				  ) => void)
+			> = {
+				"0": () => {},
+				"1": rectRender,
+				"2": polygonRender,
+				"3": lineRender,
+				"4": circleRender,
+				"5": textRender,
+				"6": imageRender,
+			};
 
-				if (shape.align != undefined) {
-					switch (shape.align.x) {
-						case AlignTypeX.Left: {
-							break;
-						}
-						case AlignTypeX.Center: {
-							drawPosition.x -= width / 2;
-							break;
-						}
-						case AlignTypeX.Right: {
-							drawPosition.x -= width;
-							break;
-						}
-					}
-
-					switch (shape.align.y) {
-						case AlignTypeY.Top: {
-							break;
-						}
-
-						case AlignTypeY.Center: {
-							drawPosition.y += height / 2;
-							break;
-						}
-
-						case AlignTypeY.Bottom: {
-							drawPosition.y += height;
-							break;
-						}
-					}
-				}
-
-				this.context.fillRect(
-					drawPosition.x,
-					drawPosition.y,
-					width * this.gameScaleFactorWidth,
-					height * this.gameScaleFactorHeight
-				);
-
-				if (shape.border != undefined) {
-					this.context.strokeRect(
-						drawPosition.x,
-						drawPosition.y,
-						width * this.gameScaleFactorWidth,
-						height * this.gameScaleFactorHeight
-					);
-				}
-			} else if (shape.type == ShapeType.Polygon) {
-				const getWidthAndHeight = () => {
-					let y = 0;
-					let x = 0;
-					for (const point of shape.points as Position[]) {
-						y = Math.max(y, point.y);
-						x = Math.max(x, point.x);
-					}
-					return [x, y];
-				};
-
-				if (shape.align != undefined) {
-					const [width, height] = getWidthAndHeight();
-					switch (shape.align.x) {
-						case AlignTypeX.Left: {
-							break;
-						}
-						case AlignTypeX.Center: {
-							drawPosition.x -= width / 2;
-							break;
-						}
-						case AlignTypeX.Right: {
-							drawPosition.x -= width;
-							break;
-						}
-					}
-
-					switch (shape.align.y) {
-						case AlignTypeY.Top: {
-							break;
-						}
-
-						case AlignTypeY.Center: {
-							drawPosition.y += height / 2;
-							break;
-						}
-
-						case AlignTypeY.Bottom: {
-							drawPosition.y += height;
-							break;
-						}
-					}
-				}
-
-				this.context.save();
-				this.context.moveTo(drawPosition.x, drawPosition.y);
-				this.context.beginPath();
-
-				for (const point of shape.points as Position[]) {
-					this.context.lineTo(
-						drawPosition.x + point.x,
-						drawPosition.y + point.y
-					);
-				}
-
-				this.context.moveTo(drawPosition.x, drawPosition.y);
-				this.context.closePath();
-				this.context.fill();
-
-				if (shape.border != undefined) {
-					this.context.stroke();
-				}
-
-				this.context.restore();
-			} else if (shape.type == ShapeType.Circle) {
-				const radius = shape.radius as number;
-				const width = radius * 2;
-				const height = radius * 2;
-
-				if (shape.align != undefined) {
-					switch (shape.align.x) {
-						case AlignTypeX.Left: {
-							drawPosition.x -= width / 2;
-							break;
-						}
-						case AlignTypeX.Center: {
-							break;
-						}
-						case AlignTypeX.Right: {
-							drawPosition.x += width / 2;
-							break;
-						}
-					}
-
-					switch (shape.align.y) {
-						case AlignTypeY.Top: {
-							drawPosition.y -= height / 2;
-							break;
-						}
-
-						case AlignTypeY.Center: {
-							break;
-						}
-
-						case AlignTypeY.Bottom: {
-							drawPosition.y += height / 2;
-							break;
-						}
-					}
-				}
-
-				this.context.arc(
-					drawPosition.x,
-					drawPosition.y,
-					radius,
-					0,
-					2 * Math.PI
-				);
-				this.context.fill();
-				if (shape.border != undefined) {
-					this.context.stroke();
-				}
-			} else if (shape.type == ShapeType.Line) {
-				const start = shape.start as Position;
-				const end = shape.end as Position;
-
-				if (shape.align != undefined) {
-					switch (shape.align.x) {
-						case AlignTypeX.Left: {
-							break;
-						}
-						case AlignTypeX.Center: {
-							drawPosition.x -= Math.abs(start.x - end.x) / 2;
-							break;
-						}
-						case AlignTypeX.Right: {
-							drawPosition.x -= Math.abs(start.x - end.x);
-							break;
-						}
-					}
-
-					switch (shape.align.y) {
-						case AlignTypeY.Top: {
-							break;
-						}
-
-						case AlignTypeY.Center: {
-							drawPosition.y += Math.abs(start.y - end.y) / 2;
-							break;
-						}
-
-						case AlignTypeY.Bottom: {
-							drawPosition.y += Math.abs(start.y - end.y);
-							break;
-						}
-					}
-				}
-
-				this.context.moveTo(drawPosition.x + start.x, drawPosition.y + start.y);
-				this.context.beginPath();
-				this.context.lineTo(drawPosition.x + end.x, drawPosition.y + end.y);
-				this.context.closePath();
-				this.context.stroke();
-			} else if (shape.type == ShapeType.Text) {
-				const text = shape.text as string;
-				const font = shape.font as Font;
-				this.context.font = font.font;
-				this.context.textAlign = shape.align?.x ?? "left";
-				this.context.direction = "inherit";
-				this.context.fillText(text, drawPosition.x, drawPosition.y);
-
-				if (shape.align != undefined) {
-					switch (shape.align.y) {
-						case AlignTypeY.Top: {
-							break;
-						}
-						case AlignTypeY.Center: {
-							drawPosition.y += font.fontSize / 2;
-							break;
-						}
-						case AlignTypeY.Bottom: {
-							drawPosition.y += font.fontSize;
-							break;
-						}
-					}
-				}
-
-				if (shape.border != undefined) {
-					this.context.strokeText(text, drawPosition.x, drawPosition.y);
-				}
-			} else if (shape.type == ShapeType.Image) {
-				const image = shape.src as CanvasImageSource | string;
-				let imageSource: CanvasImageSource;
-
-				if (typeof image == "string") {
-					const promise = () =>
-						new Promise((resolve, reject) => {
-							if (document.getElementById(image) != null) {
-								resolve(document.getElementById(image) as HTMLImageElement);
-							} else {
-								const img = document.createElement("img");
-								img.onload = () => {
-									document.getElementById("sorse-cache")!.appendChild(img);
-									imageSource = img;
-									resolve(img);
-								};
-								img.onerror = () =>
-									reject(new Error("Failed to load image " + image));
-								img.id = image;
-								img.src = image;
-							}
-						});
-
-					imageSource = (await promise()) as HTMLImageElement;
-				} else {
-					imageSource = image;
-				}
-
-				const width = (shape.width as number) ?? imageSource.width;
-				const height = (shape.height as number) ?? imageSource.height;
-
-				if (shape.align != undefined) {
-					switch (shape.align.x) {
-						case AlignTypeX.Left: {
-							break;
-						}
-						case AlignTypeX.Center: {
-							drawPosition.x -= width / 2;
-							break;
-						}
-						case AlignTypeX.Right: {
-							drawPosition.x -= width;
-							break;
-						}
-					}
-
-					switch (shape.align.y) {
-						case AlignTypeY.Top: {
-							break;
-						}
-
-						case AlignTypeY.Center: {
-							drawPosition.y += height / 2;
-							break;
-						}
-
-						case AlignTypeY.Bottom: {
-							drawPosition.y += height;
-							break;
-						}
-					}
-				}
-
-				this.context.drawImage(
-					imageSource!,
-					drawPosition.x,
-					drawPosition.y,
-					width,
-					height
-				);
-			}
+			await shapeRenderMethods[shape.type](shape, drawPosition, this.context);
 		}
 
 		if (shape.onClick != undefined && visible) {
@@ -703,7 +431,7 @@ export class Sorse {
 		this.context.lineWidth = 1;
 
 		for (const child of shape.children ?? []) {
-			await this.renderFromJSON(child, childDrawPos, visible);
+			await this.renderFromJSON(child, rotation, childDrawPos, visible);
 		}
 	}
 }

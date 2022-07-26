@@ -15,7 +15,8 @@ export const Circle = ({
 	visible,
 	onClick,
 	shadow,
-	align
+	align,
+	rotation,
 }: CircleProps): ShapeReturn => {
 	return {
 		type: ShapeType.Circle,
@@ -27,6 +28,7 @@ export const Circle = ({
 		visible: visible ?? true,
 		onClick,
 		shadow,
-		align
+		align,
+		rotation
 	};
 };

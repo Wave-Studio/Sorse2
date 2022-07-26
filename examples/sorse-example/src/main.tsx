@@ -1,4 +1,4 @@
-import { Container, Sorse, useState, ShapeReturn } from "sorse";
+import { Container, Sorse, ShapeReturn } from "sorse";
 import "./style.css";
 import Start from "./pages/start";
 import Error from "./pages/error";

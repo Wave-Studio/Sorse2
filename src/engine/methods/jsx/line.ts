@@ -16,7 +16,8 @@ export const Line = ({
 	visible,
 	onClick,
 	shadow,
-	align
+	align,
+	rotation,
 }: LineProps): ShapeReturn => {
 	return {
 		type: ShapeType.Line,
@@ -29,6 +30,7 @@ export const Line = ({
 		visible: visible ?? true,
 		onClick,
 		shadow,
-		align
+		align,
+		rotation
 	};
 };

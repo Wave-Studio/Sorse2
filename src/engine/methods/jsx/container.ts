@@ -15,12 +15,14 @@ export const Container = ({
 	offset,
 	visible,
 	onClick,
+	rotation
 }: ContainerProps): ShapeReturn => {
 	return {
 		type: ShapeType.Container,
 		visible: visible ?? true,
 		children: children ?? [],
 		offset,
-		onClick
+		onClick,
+		rotation
 	};
 };

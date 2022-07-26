@@ -49,6 +49,7 @@ export interface ShapeProps {
 		blur?: number;
 	};
 	align?: AlignmentProps;
+	rotation?: number;
 }
 
 export interface ColoredShapeProps extends ShapeProps {
@@ -85,6 +86,7 @@ export interface ShapeReturn {
 		blur?: number;
 	};
 	align?: AlignmentProps;
+	rotation?: number;
 	[key: string]: unknown;
 }
 
@@ -96,6 +98,7 @@ export interface ContainerProps {
 		collisionBox: CollisionBox;
 		callback: () => void;
 	};
+	rotation?: number;
 }
 
 export interface SquareProps extends ColoredShapeProps {
