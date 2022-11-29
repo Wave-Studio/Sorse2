@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"lib": ["deno.window", "ESNext", "DOM"],
+		"jsx": "react",
+		"jsxFactory": "Sorse.h",
+		"jsxFragmentFactory": "Sorse.f",
+		"experimentalDecorators": true
+	},
+	"tasks": {
+		"run": "echo todo"
+	},
+	"importMap": "./imports.json"
+}

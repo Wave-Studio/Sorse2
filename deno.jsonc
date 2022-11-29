@@ -1,19 +1,21 @@
 {
-	"lint": {
-		"files": {
-			"exclude": ["node_modules"]
-		},
-		"rules": {
-			// Doesn't work for some reason
-			"exclude": ["no-local"]
-		}
-	},
 	"compilerOptions": {
 		"lib": ["deno.window", "ESNext", "DOM"]
 	},
+	"fmt": {
+		"options": {
+			"useTabs": true,
+			"indentWidth": 4,
+			"lineWidth": 80,
+			"singleQuote": false,
+			"proseWrap": "always"
+		}
+	},
+	"lint": {
+		"report": "pretty"
+	},
 	"tasks": {
-		// Prettier has nicer formatting than deno
-		"fmt": "npx prettier --write .",
-		"lint": "deno lint --config=deno.jsonc"
+		"fmt": "deno fmt --config=./deno.jsonc",
+		"lint": "deno lint --config=./deno.jsonc"
 	}
 }
