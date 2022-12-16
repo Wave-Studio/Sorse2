@@ -1,5 +1,12 @@
 {
 	"imports": {
-		"sorse": "./.sorse/library/"
+		"sorse/": "./.sorse/library/",
+		"sorse/core": "./.sorse/library/core/mod.ts",
+		"sorse/backend": "./.sorse/library/backend/mod.ts",
+		"sorse/jsx": "./.sorse/library/jsx/mod.ts",
+		"sorse/hooks": "./.sorse/library/hooks/mod.ts",
+		"sorse/shapes": "./.sorse/library/shapes/mod.ts",
+		"sorse/misc": "./.sorse/library/misc/mod.ts",
+		"sorse/types": "./.sorse/library/types/mod.ts"
 	}
 }
