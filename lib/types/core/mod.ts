@@ -13,6 +13,8 @@ export interface SorseGameConstructorOptions {
 	dev: boolean;
 	/** What screen size the game was originally made for */
 	targetScreenSize: Size;
+	/** What the maximum framerate should be */
+	targetFrameRate: number;
 	/** What other optional screen sizes the game supports */
 	supportedScreenSizes: Size[];
 	/** Parent div's id */
